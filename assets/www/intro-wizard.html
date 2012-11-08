@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Stream</title>
+		<script type="text/javascript" src="jquery/jquery-1.7.2.min.js"></script>
+		<script type="text/javascript" src="cordova.js"></script>
+		<script type="text/javascript" src="jstorage.js"></script>
+		<script type="text/javascript" src="config.js"></script>
+		<script type="text/javascript" src="base.js"></script>
+		
+		<link rel="stylesheet" type="text/css" href="bootstrap/css/ao-bootstrap.css" />
+		<link rel="stylesheet" type="text/css" href="bootstrap/css/font-awesome.css" />
+		<link rel="stylesheet" type="text/css" href="css/global.css" />
+		
+		<meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+		
+		<style>
+			body{
+				background-color: white;
+				background-image: none;
+			}
+			#button-div{
+				position: absolute;
+				width: 100%;
+			}
+			.intro-wizard{
+				top: 48px;
+				position: absolute;
+			}
+		</style>
+		
+	</head>
+	<body onload="assimilate();">
+		<div class="header-bar">
+			<ul>
+				<li></li>
+				<li><img src="images/logo_white.png"></li>
+				<li></li>
+			</ul>
+		</div>
+
+        <img src="jquery/images/ajax-loader.png" id="loading-spinner" class="hide">
+        <!-- WELCOME SCREEN DIV -->
+        <div class="intro-wizard" id="welcome" style="z-index: 10">
+            <img src="images/wizard/welcome.png">
+        </div>
+        <!-- END WELCOME SCREEN -->
+
+        <!-- STEP ONE DIV -->
+        <div class="intro-wizard" id="step-one" style="z-index: 10">
+            <img src="images/wizard/step-1.png">
+        </div>
+        <!-- END STEP ONE -->
+
+        <!-- STEP TWO DIV -->
+        <div class="intro-wizard" id="step-two" style="z-index: 10">
+            <img src="images/wizard/step-2.png">
+        </div>
+        <!-- END STEP TWO -->
+
+        <!-- STEP THREE DIV -->
+        <div class="intro-wizard" id="step-three" style="z-index: 10">
+            <img src="images/wizard/step-3.png"><br>
+        </div>
+        <!-- END STEP THREE -->
+
+        <div id="button-div" class="hide" style="text-align:center;">
+            <a id="backward-btn" href="#" class="btn btn-success btn-large opacity0"><i class="icon-chevron-left icon-white"></i> Back</a>
+            <a id="skip-btn" href="#" class="btn btn-success btn-large">Go to App</a>
+            <a id="next-btn" href="#" class="btn btn-success btn-large">Next <i class="icon-chevron-right icon-white"></i></a>
+        </div>
+		
+	</body>
+	<script>
+	
+	function onPageReady(){
+
+        $.jStorage.set("show_intro_wizard", false);
+		
+		var win_width = $(window).width();
+		var curr_pos = 0;
+		var current = $("#welcome");
+		var next = $("#step-one");
+		var div_width = current.width();
+		var left_pos = ($(window).width()/2) - (div_width/2);
+		var array = [$("#welcome"), $("#step-one"), $("#step-two"), $("#step-three")];
+
+		
+		$(".intro-wizard").css("left",div_width * -1);
+		current.animate({left:left_pos},"slow");
+		
+		var pic_pos = $(".intro-wizard").position();
+		$("#button-div").css("top", pic_pos.top + $(".intro-wizard").height());
+		
+		var pic_height = $(".intro-wizard img").height();
+		// $("#button-div").css("top",(pic_height+10)+"px");
+		$("#button-div").show();
+		
+		$("#next-btn").click(function(e){
+			e.preventDefault();
+			fadeIn($("#backward-btn"));
+			array[curr_pos++].animate({left:win_width+100},"slow");
+			array[curr_pos].animate({left:left_pos},"slow");
+			if(curr_pos == 3){
+				fadeOut($(this));
+				// fadeOut($("#skip-btn"));
+				$("#go-btn").show();
+			}
+		});
+		
+		$("#backward-btn").click(function(e){
+			e.preventDefault();
+			if(curr_pos > 0){
+				array[curr_pos--].animate({left:div_width * -1},"slow");
+				array[curr_pos].animate({left:left_pos},"slow");
+				
+				if(curr_pos == 0){
+					fadeOut($(this));
+					$("#go-btn").show();
+				}else{
+					fadeIn($("#skip-btn"));
+					fadeIn($("#next-btn"));
+				}
+			}
+		});
+		
+		$("#go-btn, #skip-btn").click(function(e){
+			e.preventDefault();
+			if($.jStorage.get("auth_token")){
+//				window.location.href = "login.html";
+                window.location.href = "index.html";
+			}else{
+//				window.location.href = "index.html";
+                window.location.href = "login.html";
+			}
+		});
+
+
+		
+	}
+	
+	function fadeIn(elem){
+		elem.animate({opacity:1.0},"fast");
+	}
+	function fadeOut(elem){
+		elem.animate({opacity:0.0},"fast");
+	}
+		
+	</script>
+</html>

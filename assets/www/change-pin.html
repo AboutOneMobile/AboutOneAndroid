@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Stream</title>
+		<script type="text/javascript" src="jquery/jquery-1.7.2.min.js"></script>
+		<script type="text/javascript" src="cordova.js"></script>
+		<script type="text/javascript" src="jsrender.js"></script>
+		<script type="text/javascript" src="jstorage.js"></script>
+		<script type="text/javascript" src="config.js"></script>
+		<script type="text/javascript" src="base.js"></script>
+		<script type="text/javascript" src="stream.js"></script>
+		
+		<link rel="stylesheet" type="text/css" href="bootstrap/css/ao-bootstrap.css" />
+		<link rel="stylesheet" type="text/css" href="bootstrap/css/font-awesome.css" />
+		<link rel="stylesheet" type="text/css" href="css/global.css" />
+		
+		<meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+		
+	</head>
+	<body onload="assimilate();">
+		<img src="jquery/images/ajax-loader.png" id="loading-spinner" class="hide">
+		<div class="header-bar">
+			<ul>
+				<li id="back-btn" onclick="handleBackButton()"><i class="icon-circle-arrow-left icon-large"></i></li>
+				<li>PIN Settings</li>
+				<li></li>
+			</ul>
+		</div>
+		
+		<form class="form-horizontal ao-form hide" id="change-pin-form">
+			<span class="ao-legend">Change Your PIN<hr></span>
+			<span>You have already set a PIN. To change it, please enter your current PIN 
+				and the new PIN you wish to create.</span><br><br>
+			<div class="control-group">
+				<label class="control-label">
+					Current PIN
+				</label>
+				<div class="controls">
+					<input type="tel" id="currPin" placeholder="" value="" class="pin-input">
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label">
+					New PIN
+				</label>
+				<div class="controls">
+					<input type="tel" id="newPin1" placeholder="" value="" class="pin-input">
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label">
+					Verify PIN
+				</label>
+				<div class="controls">
+					<input type="tel" id="newPin2" placeholder="" value="" class="pin-input">
+				</div>
+			</div>
+			<div class="control-group">
+				<div class="controls">
+					<a href="#" class="btn btn-success btn-large" id="change-pin-btn">Update PIN</a>
+				</div>
+			</div>
+			<hr>
+			<span class="description">This PIN is specific to your account and this device. You will need to create a 
+				new PIN for other devices you use to access AboutOne.</span>
+		</form>
+		
+		<form class="form-horizontal ao-form hide" id="create-pin-form">
+			<span class="ao-legend">Create a PIN<hr></span>
+			<span>You have not yet set a PIN.  You can create an <em>optional</em> 4-digit PIN 
+				that will allow you to quickly login to this app later.</span><br><br>
+			<div class="control-group">
+				<label class="control-label" for="itemTitle">
+					PIN
+				</label>
+				<div class="controls">
+					<input type="tel" id="pin1" placeholder="" value="" class="pin-input">
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="itemTitle">
+					Verify PIN
+				</label>
+				<div class="controls">
+					<input type="tel" id="pin2" placeholder="" value="" class="pin-input">
+				</div>
+			</div>
+			<div class="control-group">
+				<div class="controls">
+					<a href="#" class="btn btn-success btn-large" id="create-pin-btn">Create PIN</a>
+				</div>
+			</div>
+			<hr>
+			<span class="description">This PIN is specific to your account and this device. You will need to create a 
+				new PIN for other devices you use to access AboutOne.</span>
+		</form>
+		
+	</body>
+	<script>
+	
+	function onPageReady(){
+		
+		if(hasUserPIN()){
+			$("#change-pin-form").show();
+		}else{
+			$("#create-pin-form").show();
+		}
+		
+		$("#pin1-1,#pin1-2,#pin1-3,#pin1-4,#pin2-1,#pin2-2,#pin2-3,#pin2-4").focus(function(){
+			$(this).val("");
+		});
+		$("#pin1").on('keyup',function(){
+			if($(this).val().length == 4)
+				$("#pin2").focus();
+		});
+		$("#pin2").on('keyup',function(){
+			if($(this).val().length == 4)
+				$(this).blur();
+		});
+		
+		$("#currPin").on('keyup',function(){
+			if($(this).val().length == 4)
+				$("#newPin1").focus();
+		});
+		$("#newPin1").on('keyup',function(){
+			if($(this).val().length == 4)
+				$("#newPin2").focus();
+		});
+		$("#newPin2").on('keyup',function(){
+			if($(this).val().length == 4)
+				$(this).blur();
+		});
+		
+		
+		$("#create-pin-btn").bind("click",function(){
+			showLoading();
+			var pin1 = $("#pin1").val().trim();
+			var pin2 = $("#pin2").val().trim();
+			if(pin1 != pin2){
+				aoAlert("PIN numbers do not match.","Create PIN Error");
+			}else if(pin1.length != 4){
+				aoAlert("PIN must be 4-digits long.","Create PIN Error");
+			}else{
+				changeUserPin(pin1);
+			}
+		});
+		
+		$("#change-pin-btn").bind("click",function(){
+			showLoading();
+			var pin1 = $("#newPin1").val().trim();
+			var pin2 = $("#newPin2").val().trim();
+			var currPin = $("#currPin").val().trim();
+			var oldPin = userPIN();
+			if(currPin != oldPin){
+				aoAlert("Current PIN is incorrect","Create PIN Error");
+			}else if(pin1 != pin2){
+				aoAlert("New PIN numbers do not match.","Create PIN Error");
+			}else if(pin1.length != 4){
+				aoAlert("New PIN must be 4-digits long.","Create PIN Error");
+			}else{
+				changeUserPin(pin1);
+			}
+		});
+		
+		
+	}
+	
+	
+		
+	</script>
+</html>

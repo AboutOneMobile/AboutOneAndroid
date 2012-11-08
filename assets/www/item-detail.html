@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Stream</title>
+		<script type="text/javascript" src="jquery/jquery-1.7.2.min.js"></script>
+		<script type="text/javascript" src="cordova.js"></script>
+		<script type="text/javascript" src="jsrender.js"></script>
+		<script type="text/javascript" src="jstorage.js"></script>
+		<script type="text/javascript" src="config.js"></script>
+        <script type="text/javascript" src="js/jquery.gdocsviewer.js"></script>
+		<script type="text/javascript" src="base.js"></script>
+		
+		<link rel="stylesheet" type="text/css" href="bootstrap/css/ao-bootstrap.css" />
+		<link rel="stylesheet" type="text/css" href="bootstrap/css/font-awesome.css" />
+		<link rel="stylesheet" type="text/css" href="css/global.css" />
+		
+		<meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+		
+		
+		<!-- CONTACT DETAIL TEMPLATE -->
+		<script id="item-detail-template" type="text/x-jquery-tmpl">
+			
+			<li id="main-photo-row" style="text-align:center; background-color:gray;">
+				<div class="item-main-photo-div hide" id="item-main-photo-div" style="max-height:300px; background-color:gray;">
+					<img src="images/transparent_400x400.png" class="item-main-photo" id="item-main-photo" style="height:100%">
+				</div>
+				
+			</li>
+			<li>
+				<dl>
+					<dd class="text-left" style="width:95%; max-width:100% !important;">
+						<span class="title">{{:Title}}</span><br>
+						{{if Description}}<span class="description">{{:Description}}</span>{{/if}}
+						{{if CalendarAspect && CalendarAspect.Display}}
+                            <br><span class="small-help-text">{{:CalendarAspect.Display}}</span>
+						{{/if}}
+						{{if LocationAspect && LocationAspect.Location}}
+                            <span class="small-help-text">at {{:LocationAspect.Location}}</span>
+						{{/if}}
+						{{if Sharer && Sharer.Name}}
+							<br><span class="small-help-text">Shared by {{:Sharer.Name}}</span>
+						{{/if}}
+                        {{if HealthType}}
+                            <br><span class="small-help-text">{{:HealthType}} {{if HealthFor.Name}}for {{:HealthFor.Name}}{{/if}}</span>
+                        {{/if}}
+                    </dd>
+				</dl>
+			</li>
+
+			{{if Sharer}}
+			
+			{{else}}
+				<li class="subheader" id="share-header">
+					<dl>
+						<dd>
+							Shared
+						</dd>
+						<dd>
+							{{if Sharing}}
+								<span class="pull-left">{{:Sharing.length}}</span>
+							{{else}}
+								<span class="pull-left">0</span>
+							{{/if}}
+							<i class="icon-plus-sign pull-right" id="expand-shared" onclick="toggleShares()"></i>
+							<a href="javascript:editEntry(true)" id="share-btn" class="pull-right" style="margin-right:8px;">
+								<i class="icon-share"></i>
+							</a>
+						</dd>
+					</dl>
+				</li>
+				<li style="line-height:25px;" class="hide share-row" onclick="editEntry(true)">
+					<dl>
+						<dd>
+							<i class="icon-share" style="font-size:18px;"></i>
+						</dd>
+						<dd>
+							<span class="description">Tap here to share this entry</span>
+						</dd>
+					</dl>
+				</li>
+			{{/if}}
+			<li class="subheader" id="contact-header">
+				<dl>
+					<dd>
+						Contacts
+					</dd>
+					<dd>
+						{{if Contacts}}
+							<span class="pull-left">{{:Contacts.length}}</span>
+						{{else}}
+							<span class="pull-left">0</span>
+						{{/if}}
+						<i class="icon-plus-sign pull-right" id="expand-contacts" onclick="toggleContacts()"></i>
+					</dd>
+				</dl>
+			</li>
+			{{if Labels && Labels.length > 0}}
+				<li class="subheader" id="label-header">
+					<dl>
+						<dd>
+							Labels
+						</dd>
+						<dd>
+							<span class="pull-left">{{:Labels.length}}</span>
+							<i class="icon-plus-sign pull-right" id="expand-labels" onclick="toggleLabels()"></i>
+						</dd>
+					</dl>
+				</li>
+			{{/if}}
+			<li class="subheader" id="file-header">
+				<dl>
+					<dd>
+						Files
+					</dd>
+					<dd>
+						{{if Attachments}}
+							<span class="pull-left">{{:Attachments.length}}</span>
+						{{else}}
+							<span class="pull-left">0</span>
+						{{/if}}
+						<i class="icon-plus-sign pull-right" id="expand-files" onclick="toggleFiles()"></i>
+					</dd>
+				</dl>
+			</li>
+		</script>
+		
+		<script id="labels-template" type="text/x-jquery-tmpl">
+			<li style="line-height:25px;" class="hide label-row">
+				<dl>
+					<dd style="width:95%; max-width:100%; text-align:left;">
+						{{if Labels && Labels.length > 0}}
+							{{for Labels}}
+								<span class="label label-success ao-label">{{:Text}}</span>
+							{{/for}}
+						{{/if}}
+					</dd>
+				</dl>
+			</li>
+		</script>
+		
+		<script id="empty-template" type="text/x-jquery-tmpl">
+			<li style="line-height:25px;" class="hide {{:Label}}-row">
+				<dl>
+					<dd style="width:80%;">
+						This entry has no {{:Text}}
+					</dd>
+				</dl>
+			</li>
+		</script>
+		
+		<script id="contact-template" type="text/x-jquery-tmpl">
+			<li style="line-height:25px;" class="hide contact-row">
+				<dl>
+					<dd>
+						{{if AvatarUrl}}
+							<img class="contact-icon" src="{{:AvatarUrl}}" style="width:20px; margin-bottom:-5px;">
+						{{else}}
+							<img class="contact-icon" src="images/blank_person.png" style="width:20px; margin-bottom:-5px;">
+						{{/if}}
+					</dd>
+					<dd>
+						{{:Name}}
+					</dd>
+				</dl>
+			</li>
+		</script>
+		
+		<script id="share-template" type="text/x-jquery-tmpl">
+			<li style="line-height:25px;" class="hide share-row">
+				<dl>
+					<dd>
+						{{if AvatarUrl}}
+							<img class="contact-icon" src="{{:AvatarUrl}}" style="width:20px; margin-bottom:-5px;">
+						{{else}}
+							<img class="contact-icon" src="images/blank_person.png" style="width:20px; margin-bottom:-5px;">
+						{{/if}}
+					</dd>
+					<dd>
+						{{:Name}}
+						{{if ShareOfferState == "Shared"}}
+							<span class="small-help-text">(Shared)</span>
+						{{else ShareOfferState == "NoEmail"}}
+							<span class="small-help-text">(Missing Email)</span>
+						{{else ShareOfferState == "Viewed"}}
+							<span class="small-help-text">(Viewed)</span>
+						{{/if}}
+					</dd>
+				</dl>
+			</li>
+		</script>
+		
+		<script id="file-template" type="text/x-jquery-tmpl">
+			<li style="line-height:25px;" class="hide file-row" onclick="viewFile('{{:MediaItemId}}')">
+				<dl>
+					<dd>
+						{{if MediaType == 1}}
+							<i class="icon-picture" style="font-size:18px;"></i>
+						{{else MediaType == 2}}
+							<i class="icon-file" style="font-size:18px;"></i>
+						{{else MediaType == 3}}
+							<i class="icon-volume-up" style="font-size:18px;"></i>
+						{{else MediaType == 4}}
+							<i class="icon-film" style="font-size:18px;"></i>
+						{{else}}
+							<i class="icon-file" style="font-size:18px;"></i>
+						{{/if}}
+					</dd>
+					<dd>
+						{{:FileName}}
+					</dd>
+				</dl>
+			</li>
+		</script>
+		
+		
+		<style>
+		body{
+			padding-top:48px;
+		}
+		.subheader i{
+			font-size:20px;
+		}
+		#toolbar{
+			width: 100%;
+			border-radius: 0 !important;
+			height:32px;
+			line-height:35px;
+			text-align:center;
+			padding: 5px 0 5px 0;
+			font-size:20px;
+			position:fixed;
+			top:50px;
+			box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.25);
+		}
+		#toolbar a{
+			display:block;
+			width: 20%;
+			color:white;
+			text-align:center;
+		}
+		#toolbar a:last-child{
+			margin: 0 0 0 0;
+		}
+		.contact-icon{
+			border: 1px solid rgba(0,0,0,0.25);
+		}
+		.item-detail-list li dl dd:first-child{
+			width:20%;
+		}
+		.item-detail-list li dl dd:last-child{
+			width:65%;
+		}
+		</style>
+	</head>
+	<body onload="assimilate();">
+		<img src="jquery/images/ajax-loader.png" id="loading-spinner" class="hide">
+		<div class="header-bar">
+			<ul>
+				<li id="menu-btn" onclick="handleMenuButton()"><i class="icon-th-list icon-large"></i></li>
+				<li>Entry Details</li>
+				<li onclick="editEntry()" id="edit-btn"><i class="icon-pencil icon-large" id="edit-icon"></i></li>
+			</ul>
+		</div>
+		<ul id="item-detail-list" class="item-detail-list"></ul>
+		
+	</body>
+	<script>
+	
+	item_shared = false;
+	
+	function onPageReady(){
+		
+		$("#edit-entry").click(function(e){
+			e.preventDefault();
+			window.location.href = "edit-items.html";
+		});
+		
+		var item = $.jStorage.get("_current_item_data");
+		
+		//If this is a possession, we need to hide the toolbar for sharing
+		if(!isBlank(item.ThingId)){
+			$("#share-btn").hide();
+		}
+		
+		if(isBlank(item.CalendarAspect) || isBlank(item.CalendarAspect.StartDate)){
+			item.CalendarAspect = {Display:""};
+		}else{
+			if(typeof(item.CalendarAspect.StartDate) == "string"){
+				item.CalendarAspect.Display = formatDate(getDate(item.CalendarAspect.StartDate)).Full;
+			}else{
+				item.CalendarAspect.Display = formatDate(new Date(item.CalendarAspect.StartDate)).Full;
+			}
+		}
+		
+		if(isBlank(item.LocationAspect)){
+			item.LocationAspect = {Location:""};
+		}
+		
+		switch(item.ItemType){
+			case "HealthAppointment":
+				item.HealthType = "Appointment";
+				item.HealthFor = item.AppointmentFor;
+				break;
+			case "Condition":
+				item.HealthType = "Condition";
+				item.HealthFor = item.ConditionFor;
+				break;
+			case "Prescription":
+				item.HealthType = "Medication";
+				item.HealthFor = item.PrescriptionFor;
+				break;
+			case "HealthDocument":
+				item.HealthType = "Document";
+				break;
+		}
+		
+		if(!isBlank(item.HealthFor)){
+			if(!isBlank(item.HealthFor.AvatarUrl)){
+				item.HealthFor.AvatarUrl += appendKeyAndToken() + "&square=25";
+			}else{
+				item.HealthFor.AvatarUrl = "";
+			}
+		}
+		
+		$("#item-detail-list").html($("#item-detail-template").render(item));
+		
+		if(!isBlank(item.Contacts) && item.Contacts.length > 0){
+            var contactList = [];
+			$.each(item.Contacts, function(i, contact){
+                if(contact.Action != 3){
+                    if(!isBlank(contact.AvatarUrl) && contact.AvatarUrl != "images/blank_person.png"){
+                        if(contact.AvatarUrl.length == 32){
+                            contact.AvatarUrl = avatarUrl(contact.AvatarUrl,30);
+                        }else{
+                            contact.AvatarUrl += appendKeyAndToken() + "&square=30";
+                        }
+                    }else{
+                        contact.AvatarUrl = "images/blank_person.png";
+                    }
+                    $("#contact-header").after($("#contact-template").render(contact));
+                }
+			});
+		}else{
+			$("#contact-header").after($("#empty-template").render({Text:"contacts",Label:"contact"}));
+		}
+		
+		
+		if(item.Sharing && item.Sharing.length > 0){
+			$.each(item.Sharing,function(i,share){
+				if(!isBlank(share.AvatarUrl)){
+					share.AvatarUrl += appendKeyAndToken() + "&square=30";
+				}else{
+					share.AvatarUrl = "images/blank_person.png";
+				}
+				$("#share-header").after($("#share-template").render(share));
+			});
+		}
+		
+		
+		if(item.Labels && item.Labels.length > 0){
+			$("#label-header").after($("#labels-template").render(item));
+		}
+		
+		
+		
+		$(".item-thumbnail-photo").live("click",function(){
+			if(!$(this).hasClass("item-thumbnail-photo-active")){
+				$(".item-thumbnail-photo-active").removeClass("item-thumbnail-photo-active");
+				$(".item-main-photo").attr("src", $(this).attr("src"));
+				$(this).addClass("item-thumbnail-photo-active");
+				$("#item-main-photo-div").show();
+			}else{
+				$(this).removeClass("item-thumbnail-photo-active");
+				$("#item-main-photo-div").hide();
+			}
+		});
+		
+        
+		if(!isBlank(item.Attachments) && item.Attachments.length > 0){
+			var photoCount = 0;
+			var mainphotodiv = $("#item-main-photo-div");
+			var mainphoto = $("#item-main-photo");
+			var table = $("#attachments-table");
+			$.each(item.Attachments, function(index, file){
+				if(!file.Url.contains("authToken")){
+					file.Url += appendKeyAndToken() + "&square=400";
+				}
+				if(file.MediaType == 1 && !isBlank(file.Url) && (isBlank(file.Action) || file.Action != 3)){
+					mainphotodiv.after("<img src='"+file.Url+"' class='item-thumbnail-photo' id='"+file.MediaItemId+"'>");
+                	photoCount++;
+                }
+				$("#file-header").after($("#file-template").render(file));
+			});
+			if(photoCount == 0){
+				$("#main-photo-row").hide();
+			}
+		}else{
+			$("#file-header").hide();
+			$("#main-photo-row").hide();
+		}
+        
+		
+		if(!isBlank(item.Sharer)){
+			console.log("item is shared");
+			$("#edit-icon").hide();
+			item_shared = true;
+		}
+		
+		
+	}
+	
+	function viewFile(id){
+		console.log(id);
+		var item = $.jStorage.get("_current_item_data");
+		$.each(item.Attachments,function(i,file){
+			if(file.MediaItemId == id){
+				switch(file.MediaType){
+					case MediaType.Image:
+						$("#"+file.MediaItemId).click();
+						window.scrollTo(0,0);
+						break;
+					case MediaType.Document:
+						window.location.href = avatarUrl(file.MediaItemId);
+						break;
+					case MediaType.Audio:
+						aoAlert("To listen to audio files, please login to your account at AboutOne.com","Audio Files");
+						break;
+					case MediaType.Video:
+						aoAlert("To watch video files, please login to your account at AboutOne.com","Video Files");
+						break;
+				}
+				return false;
+			}
+		});
+	}
+	
+	
+	function toggleShares(){
+		$("#expand-shared").toggleClass("icon-plus-sign");
+		$("#expand-shared").toggleClass("icon-minus-sign");
+		if($("#expand-shared").hasClass("icon-minus-sign")){
+			$(".share-row").show();
+		}else{
+			$(".share-row").hide();
+		}
+	}
+	
+	function toggleContacts(){
+		$("#expand-contacts").toggleClass("icon-plus-sign");
+		$("#expand-contacts").toggleClass("icon-minus-sign");
+		if($("#expand-contacts").hasClass("icon-minus-sign")){
+			$(".contact-row").show();
+		}else{
+			$(".contact-row").hide();
+		}
+	}
+	
+	function toggleFiles(){
+		$("#expand-files").toggleClass("icon-plus-sign");
+		$("#expand-files").toggleClass("icon-minus-sign");
+		if($("#expand-files").hasClass("icon-minus-sign")){
+			$(".file-row").show();
+		}else{
+			$(".file-row").hide();
+		}
+	}
+	
+	function toggleLabels(){
+		$("#expand-labels").toggleClass("icon-plus-sign");
+		$("#expand-labels").toggleClass("icon-minus-sign");
+		if($("#expand-labels").hasClass("icon-minus-sign")){
+			$(".label-row").show();
+		}else{
+			$(".label-row").hide();
+		}
+	}
+	
+	function loadItem(itemId) {
+		showLoading();
+		apiGet(apiPath('item/' + itemId), {}, function(json){
+			$.jStorage.set("_current_item_data",json.Item);
+			console.log("stored current item json...");
+			console.log(json.Item);
+			hideLoading();
+			// window.location.href = "item-detail.html";
+		});
+	}
+	
+	function isExtraExt(ext){
+		//these are the supported file types for the GoogleDocsViewer plugin we used to view attachment files
+		ext = ext.substr(ext.lastIndexOf(".")+1).toLowerCase();
+		console.log("EXTRA EXT: " + ext);
+		return (ext=='pdf'||ext=='doc'||ext=='docx'||ext=='doc'||ext=='xls'||
+				ext=='xlsx'||ext=='ppt'||ext=='pptx'||ext=='pdf'||ext=='pages'||
+				ext=='ai'||ext=='psd'||ext=='tiff'||ext=='svg'||ext=='zip'||ext=='rar');
+	}
+        
+    function isUsableExt(ext){
+        //these are the supported file types for the GoogleDocsViewer plugin we used to view attachment files
+        ext = ext.substr(ext.lastIndexOf(".")+1).toLowerCase();
+        console.log("USABLE EXT: " + ext);
+        return (ext=='pdf'||ext=='doc'||ext=='docx'||ext=='doc'||ext=='xls'||
+                ext=='xlsx'||ext=='ppt'||ext=='pptx');
+    }
+    
+    function editEntry(share){
+    	if(!item_shared){
+    		var item = $.jStorage.get("_current_item_data");
+	    	// if(item.ItemType == "HealthAppointment" || item.ItemType == "Condition" || item.ItemType == "Prescription" || item.ItemType == "HealthDocument"){
+				// $.jStorage.set("_edit_health_item",true);
+				// window.location.href = "add-health.html";
+			// }else{
+				$.jStorage.set('should_edit_item', true);
+				if(share){
+					$.jStorage.set('should_share_item', true);
+				}
+				window.location.href = "quick-add.html";
+			// }
+    	}
+    }
+	
+		
+	</script>
+</html>

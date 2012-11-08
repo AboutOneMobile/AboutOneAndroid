@@ -1,0 +1,417 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workbench progressCount="38" version="2.0">
+<workbenchAdvisor/>
+<window height="736" width="1419" x="8" y="26">
+<fastViewData fastViewLocation="1024"/>
+<perspectiveBar>
+<itemSize x="160"/>
+</perspectiveBar>
+<coolbarLayout>
+<coolItem id="group.file" itemType="typeGroupMarker"/>
+<coolItem id="org.eclipse.ui.workbench.file" itemType="typeToolBarContribution" x="106" y="22"/>
+<coolItem id="additions" itemType="typeGroupMarker"/>
+<coolItem id="org.eclipse.debug.ui.launchActionSet" itemType="typeToolBarContribution" x="114" y="22"/>
+<coolItem id="org.eclipse.search.searchActionSet" itemType="typeToolBarContribution" x="68" y="22"/>
+<coolItem id="com.aptana.ui.globalActionSet" itemType="typeToolBarContribution" x="150" y="22"/>
+<coolItem id="org.eclipse.ui.edit.text.actionSet.presentation" itemType="typeToolBarContribution" x="76" y="22"/>
+<coolItem id="group.nav" itemType="typeGroupMarker"/>
+<coolItem id="org.eclipse.ui.workbench.navigate" itemType="typeToolBarContribution" x="70" y="22"/>
+<coolItem id="group.editor" itemType="typeGroupMarker"/>
+<coolItem id="com.aptana.editor.xml" itemType="typePlaceholder" x="-1" y="-1"/>
+<coolItem id="com.aptana.editor.text" itemType="typePlaceholder" x="-1" y="-1"/>
+<coolItem id="com.aptana.editor.css" itemType="typePlaceholder" x="-1" y="-1"/>
+<coolItem id="com.aptana.editor.js" itemType="typeToolBarContribution" x="-1" y="-1"/>
+<coolItem id="com.aptana.editor.html" itemType="typeToolBarContribution" x="-1" y="-1"/>
+<coolItem id="org.eclipse.ui.DefaultTextEditor" itemType="typePlaceholder" x="-1" y="-1"/>
+<coolItem id="group.help" itemType="typeGroupMarker"/>
+<coolItem id="org.eclipse.ui.workbench.help" itemType="typeToolBarContribution" x="-1" y="-1"/>
+</coolbarLayout>
+<page aggregateWorkingSetId="Aggregate for window 1348248058621" focus="true" label="Workspace - Web">
+<editors>
+<editorArea activeWorkbook="DefaultEditorWorkbook">
+<info part="DefaultEditorWorkbook">
+<folder appearance="1" expanded="2">
+<presentation id="org.eclipse.ui.presentations.WorkbenchPresentationFactory">
+<part id="0"/>
+<part id="1"/>
+<part id="2"/>
+<part id="3"/>
+<part id="4"/>
+<part id="5"/>
+<part id="6"/>
+<part id="7"/>
+<part id="8"/>
+</presentation>
+</folder>
+</info>
+</editorArea>
+<editor id="com.aptana.editor.html" name="index.html" partName="index.html" title="index.html" tooltip="/Users/aboutone/Documents/EclipseWorkspace/AboutOneFamilyOrganizer/assets/www/index.html" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.ide.FileStoreEditorInputFactory" uri="file:/Users/aboutone/Documents/EclipseWorkspace/AboutOneFamilyOrganizer/assets/www/index.html"/>
+<editorState selectionHorizontalPixel="34" selectionLength="27" selectionOffset="3463" selectionTopPixel="1380"/>
+</editor>
+<editor id="com.aptana.editor.js" name="base.js" partName="base.js" title="base.js" tooltip="/Users/aboutone/Documents/EclipseWorkspace/AboutOneFamilyOrganizer/assets/www/base.js" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.ide.FileStoreEditorInputFactory" uri="file:/Users/aboutone/Documents/EclipseWorkspace/AboutOneFamilyOrganizer/assets/www/base.js"/>
+<editorState selectionHorizontalPixel="0" selectionLength="8" selectionOffset="41734" selectionTopPixel="23385"/>
+</editor>
+<editor id="com.aptana.editor.html" name="item-detail.html" partName="item-detail.html" title="item-detail.html" tooltip="/Users/aboutone/Documents/EclipseWorkspace/AboutOneFamilyOrganizer/assets/www/item-detail.html" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.ide.FileStoreEditorInputFactory" uri="file:/Users/aboutone/Documents/EclipseWorkspace/AboutOneFamilyOrganizer/assets/www/item-detail.html"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="12024" selectionTopPixel="6208"/>
+</editor>
+<editor activePart="true" focus="true" id="com.aptana.editor.js" name="config.js" partName="config.js" title="config.js" tooltip="/Users/aboutone/Documents/EclipseWorkspace/AboutOneFamilyOrganizer/assets/www/config.js" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.ide.FileStoreEditorInputFactory" uri="file:/Users/aboutone/Documents/EclipseWorkspace/AboutOneFamilyOrganizer/assets/www/config.js"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="418" selectionTopPixel="0"/>
+</editor>
+<editor id="com.aptana.editor.js" name="contacts.js" partName="contacts.js" title="contacts.js" tooltip="/Users/aboutone/Documents/EclipseWorkspace/AboutOneFamilyOrganizer/assets/www/contacts.js" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.ide.FileStoreEditorInputFactory" uri="file:/Users/aboutone/Documents/EclipseWorkspace/AboutOneFamilyOrganizer/assets/www/contacts.js"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="451" selectionTopPixel="0"/>
+</editor>
+<editor id="com.aptana.editor.html" name="contacts.html" partName="contacts.html" title="contacts.html" tooltip="/Users/aboutone/Documents/EclipseWorkspace/AboutOneFamilyOrganizer/assets/www/contacts.html" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.ide.FileStoreEditorInputFactory" uri="file:/Users/aboutone/Documents/EclipseWorkspace/AboutOneFamilyOrganizer/assets/www/contacts.html"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="4255" selectionTopPixel="1188"/>
+</editor>
+<editor id="com.aptana.editor.html" name="settings.html" partName="settings.html" title="settings.html" tooltip="/Users/aboutone/Documents/EclipseWorkspace/AboutOneFamilyOrganizer/assets/www/settings.html" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.ide.FileStoreEditorInputFactory" uri="file:/Users/aboutone/Documents/EclipseWorkspace/AboutOneFamilyOrganizer/assets/www/settings.html"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="1973" selectionTopPixel="850"/>
+</editor>
+<editor id="com.aptana.editor.js" name="aboutone.js" partName="aboutone.js" title="aboutone.js" tooltip="/Users/aboutone/Documents/EclipseWorkspace/AboutOneFamilyOrganizer/assets/www/aboutone.js" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.ide.FileStoreEditorInputFactory" uri="file:/Users/aboutone/Documents/EclipseWorkspace/AboutOneFamilyOrganizer/assets/www/aboutone.js"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="9027" selectionTopPixel="5099"/>
+</editor>
+<editor id="com.aptana.editor.html" name="contacts-add.html" partName="contacts-add.html" title="contacts-add.html" tooltip="/Users/aboutone/Documents/EclipseWorkspace/AboutOneFamilyOrganizer/assets/www/contacts-add.html" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.ide.FileStoreEditorInputFactory" uri="file:/Users/aboutone/Documents/EclipseWorkspace/AboutOneFamilyOrganizer/assets/www/contacts-add.html"/>
+<editorState selectionHorizontalPixel="0" selectionLength="13" selectionOffset="25284" selectionTopPixel="10880"/>
+</editor>
+</editors>
+<views>
+<view id="org.eclipse.ui.navigator.ProjectExplorer" partName="Project Explorer">
+<viewState CommonNavigator.LINKING_ENABLED="0" org.eclipse.ui.navigator.resources.workingSets.showTopLevelWorkingSets="0"/>
+</view>
+<view id="com.aptana.snippets.ui.views.SnippetsView" partName="Snippets"/>
+<view id="com.aptana.samples.ui.SamplesView" partName="Samples">
+<viewState/>
+</view>
+<view id="org.eclipse.ui.views.ContentOutline" partName="Outline">
+<viewState/>
+</view>
+</views>
+<perspectives activePart="com.aptana.editor.js" activePerspective="com.aptana.ui.WebPerspective">
+<perspective editorAreaTrimState="2" editorAreaVisible="1" fixed="0" version="0.016">
+<descriptor class="com.aptana.ui.internal.WebPerspectiveFactory" id="com.aptana.ui.WebPerspective" label="Web"/>
+<alwaysOnActionSet id="com.aptana.browser.actionSet"/>
+<alwaysOnActionSet id="com.aptana.ruby.debug.ui.RubyDebugActionSet"/>
+<alwaysOnActionSet id="org.eclipse.ui.cheatsheets.actionSet"/>
+<alwaysOnActionSet id="org.eclipse.search.searchActionSet"/>
+<alwaysOnActionSet id="org.eclipse.ui.edit.text.actionSet.convertLineDelimitersTo"/>
+<alwaysOnActionSet id="org.eclipse.ui.actionSet.keyBindings"/>
+<alwaysOnActionSet id="org.eclipse.ui.actionSet.openFiles"/>
+<alwaysOnActionSet id="com.aptana.editor.common.presentation"/>
+<alwaysOnActionSet id="org.eclipse.debug.ui.launchActionSet"/>
+<alwaysOnActionSet id="org.eclipse.debug.ui.breakpointActionSet"/>
+<alwaysOnActionSet id="com.aptana.js.debug.ui.actionSet"/>
+<alwaysOnActionSet id="org.eclipse.ui.NavigateActionSet"/>
+<alwaysOnActionSet id="org.eclipse.ui.edit.text.actionSet.presentation"/>
+<alwaysOnActionSet id="com.aptana.ui.globalActionSet"/>
+<alwaysOnActionSet id="com.aptana.terminal.actionSet"/>
+<show_view_action id="com.aptana.browser.views.webbrowser"/>
+<show_view_action id="com.aptana.explorer.view"/>
+<show_view_action id="org.eclipse.ui.navigator.ProjectExplorer"/>
+<show_view_action id="com.aptana.ui.io.remoteview"/>
+<show_view_action id="org.eclipse.ui.views.ContentOutline"/>
+<show_view_action id="com.aptana.samples.ui.SamplesView"/>
+<show_view_action id="com.aptana.snippets.ui.views.SnippetsView"/>
+<show_view_action id="com.aptana.terminal.views.terminal"/>
+<show_view_action id="org.eclipse.ui.console.ConsoleView"/>
+<show_view_action id="org.eclipse.pde.runtime.LogView"/>
+<show_view_action id="org.eclipse.ui.views.ProblemView"/>
+<show_view_action id="org.eclipse.ui.views.TaskList"/>
+<show_view_action id="com.aptana.webserver.ui.view"/>
+<new_wizard_action id="com.aptana.editor.php.NewPHPProjectWizard"/>
+<new_wizard_action id="com.aptana.ui.wizards.NewWebProject"/>
+<new_wizard_action id="com.aptana.ruby.core.ui.rubyProjectWizard"/>
+<new_wizard_action id="com.aptana.ui.wizards.new.file"/>
+<new_wizard_action id="org.eclipse.ui.wizards.new.folder"/>
+<new_wizard_action id="org.eclipse.ui.editors.wizards.UntitledTextFileWizard"/>
+<new_wizard_action id="org.radrails.rails.ui.projectWizard"/>
+<perspective_action id="org.eclipse.debug.ui.DebugPerspective"/>
+<hide_toolbar_item_id id="org.eclipse.ui.edit.text.toggleShowSelectedElementOnly"/>
+<view id="org.eclipse.ui.navigator.ProjectExplorer"/>
+<view id="com.aptana.samples.ui.SamplesView"/>
+<view id="com.aptana.snippets.ui.views.SnippetsView"/>
+<view id="org.eclipse.ui.views.ContentOutline"/>
+<fastViewBars/>
+<layout>
+<mainWindow>
+<info folder="true" part="left">
+<folder activePageID="org.eclipse.ui.navigator.ProjectExplorer" appearance="2" expanded="2">
+<page content="org.eclipse.ui.navigator.ProjectExplorer" label="Project Explorer"/>
+<page content="com.aptana.explorer.view" label="LabelNotFound"/>
+<page content="com.aptana.ui.io.remoteview" label="LabelNotFound"/>
+<presentation id="org.eclipse.ui.presentations.WorkbenchPresentationFactory">
+<part id="0"/>
+</presentation>
+</folder>
+</info>
+<info folder="true" part="stickyFolderRight" ratio="0.75" ratioLeft="894" ratioRight="298" relationship="2" relative="left">
+<folder appearance="2" expanded="2">
+<page content="org.eclipse.help.ui.HelpView" label="LabelNotFound"/>
+<page content="org.eclipse.ui.internal.introview" label="LabelNotFound"/>
+<page content="org.eclipse.ui.cheatsheets.views.CheatSheetView" label="LabelNotFound"/>
+</folder>
+</info>
+<info part="org.eclipse.ui.editorss" ratio="0.1356534" ratioLeft="191" ratioRight="1217" relationship="2" relative="left"/>
+<info folder="true" part="terminalArea" ratio="0.82253087" ratioLeft="533" ratioRight="115" relationship="4" relative="org.eclipse.ui.editorss">
+<folder appearance="2" expanded="2">
+<page content="org.eclipse.ui.console.ConsoleView" label="LabelNotFound"/>
+<page content="com.aptana.terminal.views.terminal" label="LabelNotFound"/>
+<page content="org.eclipse.ui.views.ProblemView" label="LabelNotFound"/>
+<page content="org.eclipse.pde.runtime.LogView" label="LabelNotFound"/>
+<page content="org.eclipse.ui.views.TaskList" label="LabelNotFound"/>
+<presentation id="org.eclipse.ui.presentations.WorkbenchPresentationFactory"/>
+</folder>
+</info>
+<info folder="true" part="org.eclipse.ui.internal.ViewStack@f69f30" ratio="0.8591433" ratioLeft="1043" ratioRight="171" relationship="2" relative="org.eclipse.ui.editorss">
+<folder activePageID="org.eclipse.ui.views.ContentOutline" appearance="2" expanded="2">
+<page content="org.eclipse.ui.views.ContentOutline" label="Outline"/>
+<presentation id="org.eclipse.ui.presentations.WorkbenchPresentationFactory">
+<part id="0"/>
+</presentation>
+</folder>
+</info>
+<info folder="true" part="org.eclipse.ui.internal.ViewStack@150ed68" ratio="0.7496617" ratioLeft="554" ratioRight="185" relationship="4" relative="left">
+<folder activePageID="com.aptana.samples.ui.SamplesView" appearance="2" expanded="2">
+<page content="com.aptana.samples.ui.SamplesView" label="Samples"/>
+<page content="com.aptana.snippets.ui.views.SnippetsView" label="Snippets"/>
+<presentation id="org.eclipse.ui.presentations.WorkbenchPresentationFactory">
+<part id="0"/>
+<part id="1"/>
+</presentation>
+</folder>
+</info>
+</mainWindow>
+</layout>
+</perspective>
+</perspectives>
+<workingSets/>
+<navigationHistory>
+<editors>
+<editor factoryID="org.eclipse.ui.ide.FileStoreEditorInputFactory" id="com.aptana.editor.js" uri="file:/Users/aboutone/Documents/EclipseWorkspace/AboutOneFamilyOrganizer/assets/www/base.js"/>
+<editor factoryID="org.eclipse.ui.ide.FileStoreEditorInputFactory" id="com.aptana.editor.js" uri="file:/Users/aboutone/Documents/EclipseWorkspace/AboutOneFamilyOrganizer/assets/www/aboutone.js"/>
+<editor factoryID="org.eclipse.ui.ide.FileStoreEditorInputFactory" id="com.aptana.editor.js" uri="file:/Users/aboutone/Documents/EclipseWorkspace/AboutOneFamilyOrganizer/assets/www/contacts.js"/>
+<editor factoryID="org.eclipse.ui.ide.FileStoreEditorInputFactory" id="com.aptana.editor.html" uri="file:/Users/aboutone/Documents/EclipseWorkspace/AboutOneFamilyOrganizer/assets/www/contacts-add.html"/>
+<editor factoryID="org.eclipse.ui.ide.FileStoreEditorInputFactory" id="com.aptana.editor.js" uri="file:/Users/aboutone/Documents/EclipseWorkspace/AboutOneFamilyOrganizer/assets/www/config.js"/>
+<editor factoryID="org.eclipse.ui.ide.FileStoreEditorInputFactory" id="com.aptana.editor.js" uri="file:/Users/aboutone/Documents/EclipseWorkspace/AboutOneFamilyOrganizer/assets/www/config.js"/>
+</editors>
+<item historyLabel="base.js" index="0">
+<position info="not_deleted" x="13376" y="712"/>
+</item>
+<item historyLabel="aboutone.js" index="1">
+<position info="not_deleted" x="7617" y="0"/>
+</item>
+<item historyLabel="aboutone.js" index="1">
+<position info="not_deleted" x="9872" y="0"/>
+</item>
+<item historyLabel="aboutone.js" index="1">
+<position info="not_deleted" x="9673" y="0"/>
+</item>
+<item historyLabel="aboutone.js" index="1">
+<position info="not_deleted" x="6950" y="0"/>
+</item>
+<item historyLabel="aboutone.js" index="1">
+<position info="not_deleted" x="9539" y="0"/>
+</item>
+<item historyLabel="aboutone.js" index="1">
+<position info="not_deleted" x="9590" y="0"/>
+</item>
+<item historyLabel="aboutone.js" index="1">
+<position info="not_deleted" x="9586" y="0"/>
+</item>
+<item historyLabel="aboutone.js" index="1">
+<position info="not_deleted" x="9872" y="0"/>
+</item>
+<item historyLabel="aboutone.js" index="1">
+<position info="not_deleted" x="9762" y="0"/>
+</item>
+<item historyLabel="contacts.js" index="2">
+<position info="not_deleted" x="451" y="0"/>
+</item>
+<item historyLabel="contacts-add.html" index="3">
+<position info="not_deleted" x="0" y="0"/>
+</item>
+<item historyLabel="contacts-add.html" index="3">
+<position info="not_deleted" x="25284" y="13"/>
+</item>
+<item historyLabel="aboutone.js" index="1">
+<position info="not_deleted" x="9797" y="0"/>
+</item>
+<item historyLabel="aboutone.js" index="1">
+<position info="not_deleted" x="4283" y="0"/>
+</item>
+<item historyLabel="config.js" index="4">
+<position info="not_deleted" x="122" y="42"/>
+</item>
+<item historyLabel="aboutone.js" index="1">
+<position info="not_deleted" x="4468" y="0"/>
+</item>
+<item historyLabel="contacts-add.html" index="3">
+<position info="not_deleted" x="25284" y="13"/>
+</item>
+<item historyLabel="config.js" index="4">
+<position info="not_deleted" x="0" y="928"/>
+</item>
+<item historyLabel="aboutone.js" index="1">
+<position info="not_deleted" x="4960" y="0"/>
+</item>
+<item historyLabel="base.js" index="0">
+<position info="not_deleted" x="13376" y="712"/>
+</item>
+<item historyLabel="base.js" index="0">
+<position info="not_deleted" x="44814" y="0"/>
+</item>
+<item historyLabel="config.js" index="4">
+<position info="not_deleted" x="699" y="0"/>
+</item>
+<item historyLabel="base.js" index="0">
+<position info="not_deleted" x="44815" y="0"/>
+</item>
+<item historyLabel="aboutone.js" index="1">
+<position info="not_deleted" x="9027" y="0"/>
+</item>
+<item historyLabel="config.js" index="4">
+<position info="not_deleted" x="699" y="0"/>
+</item>
+<item historyLabel="aboutone.js" index="1">
+<position info="not_deleted" x="9027" y="0"/>
+</item>
+<item historyLabel="base.js" index="0">
+<position info="not_deleted" x="44815" y="0"/>
+</item>
+<item historyLabel="base.js" index="0">
+<position info="not_deleted" x="4116" y="7"/>
+</item>
+<item historyLabel="base.js" index="0">
+<position/>
+</item>
+<item historyLabel="base.js" index="0">
+<position/>
+</item>
+<item historyLabel="base.js" index="0">
+<position/>
+</item>
+<item historyLabel="base.js" index="0">
+<position/>
+</item>
+<item historyLabel="base.js" index="0">
+<position/>
+</item>
+<item historyLabel="base.js" index="0">
+<position/>
+</item>
+<item historyLabel="base.js" index="0">
+<position/>
+</item>
+<item historyLabel="base.js" index="0">
+<position/>
+</item>
+<item historyLabel="base.js" index="0">
+<position/>
+</item>
+<item historyLabel="base.js" index="0">
+<position/>
+</item>
+<item historyLabel="base.js" index="0">
+<position info="not_deleted" x="4116" y="7"/>
+</item>
+<item historyLabel="base.js" index="0">
+<position info="not_deleted" x="4194" y="0"/>
+</item>
+<item historyLabel="base.js" index="0">
+<position info="not_deleted" x="10342" y="6"/>
+</item>
+<item historyLabel="base.js" index="0">
+<position info="not_deleted" x="10391" y="0"/>
+</item>
+<item historyLabel="base.js" index="0">
+<position info="not_deleted" x="17841" y="13"/>
+</item>
+<item historyLabel="base.js" index="0">
+<position info="not_deleted" x="17872" y="0"/>
+</item>
+<item historyLabel="base.js" index="0">
+<position info="not_deleted" x="17874" y="0"/>
+</item>
+<item historyLabel="base.js" index="0">
+<position info="not_deleted" x="9380" y="21"/>
+</item>
+<item historyLabel="base.js" index="0">
+<position info="not_deleted" x="9435" y="0"/>
+</item>
+<item historyLabel="base.js" index="0">
+<position info="not_deleted" x="41734" y="8"/>
+</item>
+<item active="true" historyLabel="config.js" index="5">
+<position info="not_deleted" x="699" y="0"/>
+</item>
+</navigationHistory>
+<input factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/" type="8"/>
+</page>
+<workbenchWindowAdvisor/>
+<actionBarAdvisor/>
+<trimLayout>
+<trimArea IMemento.internal.id="128">
+<trimItem IMemento.internal.id="org.eclipse.ui.internal.WorkbenchWindow.topBar"/>
+</trimArea>
+<trimArea IMemento.internal.id="1024">
+<trimItem IMemento.internal.id="org.eclise.ui.internal.FastViewBar"/>
+<trimItem IMemento.internal.id="org.eclipse.jface.action.StatusLineManager"/>
+<trimItem IMemento.internal.id="org.eclipse.ui.internal.progress.ProgressRegion"/>
+</trimArea>
+</trimLayout>
+</window>
+<mruList>
+<file factoryID="org.eclipse.ui.ide.FileStoreEditorInputFactory" id="com.aptana.editor.html" name="contacts-add.html" tooltip="/Users/aboutone/Documents/EclipseWorkspace/AboutOneFamilyOrganizer/assets/www/contacts-add.html">
+<persistable uri="file:/Users/aboutone/Documents/EclipseWorkspace/AboutOneFamilyOrganizer/assets/www/contacts-add.html"/>
+</file>
+<file factoryID="org.eclipse.ui.ide.FileStoreEditorInputFactory" id="com.aptana.editor.js" name="aboutone.js" tooltip="/Users/aboutone/Documents/EclipseWorkspace/AboutOneFamilyOrganizer/assets/www/aboutone.js">
+<persistable uri="file:/Users/aboutone/Documents/EclipseWorkspace/AboutOneFamilyOrganizer/assets/www/aboutone.js"/>
+</file>
+<file factoryID="org.eclipse.ui.ide.FileStoreEditorInputFactory" id="com.aptana.editor.html" name="quick-add.html" tooltip="/Users/aboutone/Documents/EclipseWorkspace/AboutOneFamilyOrganizer/assets/www/quick-add.html">
+<persistable uri="file:/Users/aboutone/Documents/EclipseWorkspace/AboutOneFamilyOrganizer/assets/www/quick-add.html"/>
+</file>
+<file factoryID="org.eclipse.ui.ide.FileStoreEditorInputFactory" id="com.aptana.editor.css" name="quick-add.css" tooltip="/Users/aboutone/Documents/EclipseWorkspace/AboutOneFamilyOrganizer/assets/www/css/quick-add.css">
+<persistable uri="file:/Users/aboutone/Documents/EclipseWorkspace/AboutOneFamilyOrganizer/assets/www/css/quick-add.css"/>
+</file>
+<file factoryID="org.eclipse.ui.ide.FileStoreEditorInputFactory" id="com.aptana.editor.css" name="global.css" tooltip="/Users/aboutone/Documents/EclipseWorkspace/AboutOneFamilyOrganizer/assets/www/css/global.css">
+<persistable uri="file:/Users/aboutone/Documents/EclipseWorkspace/AboutOneFamilyOrganizer/assets/www/css/global.css"/>
+</file>
+<file factoryID="org.eclipse.ui.ide.FileStoreEditorInputFactory" id="com.aptana.editor.js" name="stream.js" tooltip="/Users/aboutone/Documents/EclipseWorkspace/AboutOneFamilyOrganizer/assets/www/stream.js">
+<persistable uri="file:/Users/aboutone/Documents/EclipseWorkspace/AboutOneFamilyOrganizer/assets/www/stream.js"/>
+</file>
+<file factoryID="org.eclipse.ui.ide.FileStoreEditorInputFactory" id="com.aptana.editor.html" name="feedback-form.html" tooltip="/Users/aboutone/Documents/EclipseWorkspace/AboutOneFamilyOrganizer/assets/www/feedback-form.html">
+<persistable uri="file:/Users/aboutone/Documents/EclipseWorkspace/AboutOneFamilyOrganizer/assets/www/feedback-form.html"/>
+</file>
+<file factoryID="org.eclipse.ui.ide.FileStoreEditorInputFactory" id="com.aptana.editor.html" name="login.html" tooltip="/Users/aboutone/Documents/EclipseWorkspace/AboutOneFamilyOrganizer/assets/www/login.html">
+<persistable uri="file:/Users/aboutone/Documents/EclipseWorkspace/AboutOneFamilyOrganizer/assets/www/login.html"/>
+</file>
+<file factoryID="org.eclipse.ui.ide.FileStoreEditorInputFactory" id="com.aptana.editor.html" name="settings.html" tooltip="/Users/aboutone/Documents/EclipseWorkspace/AboutOneFamilyOrganizer/assets/www/settings.html">
+<persistable uri="file:/Users/aboutone/Documents/EclipseWorkspace/AboutOneFamilyOrganizer/assets/www/settings.html"/>
+</file>
+<file factoryID="org.eclipse.ui.ide.FileStoreEditorInputFactory" id="com.aptana.editor.js" name="quick-add.js" tooltip="/Users/aboutone/Documents/EclipseWorkspace/AboutOneFamilyOrganizer/assets/www/quick-add.js">
+<persistable uri="file:/Users/aboutone/Documents/EclipseWorkspace/AboutOneFamilyOrganizer/assets/www/quick-add.js"/>
+</file>
+<file factoryID="org.eclipse.ui.ide.FileStoreEditorInputFactory" id="com.aptana.editor.html" name="contacts.html" tooltip="/Users/aboutone/Documents/EclipseWorkspace/AboutOneFamilyOrganizer/assets/www/contacts.html">
+<persistable uri="file:/Users/aboutone/Documents/EclipseWorkspace/AboutOneFamilyOrganizer/assets/www/contacts.html"/>
+</file>
+<file factoryID="org.eclipse.ui.ide.FileStoreEditorInputFactory" id="com.aptana.editor.js" name="contacts.js" tooltip="/Users/aboutone/Documents/EclipseWorkspace/AboutOneFamilyOrganizer/assets/www/contacts.js">
+<persistable uri="file:/Users/aboutone/Documents/EclipseWorkspace/AboutOneFamilyOrganizer/assets/www/contacts.js"/>
+</file>
+<file factoryID="org.eclipse.ui.ide.FileStoreEditorInputFactory" id="com.aptana.editor.html" name="contacts-detail.html" tooltip="/Users/aboutone/Documents/EclipseWorkspace/AboutOneFamilyOrganizer/assets/www/contacts-detail.html">
+<persistable uri="file:/Users/aboutone/Documents/EclipseWorkspace/AboutOneFamilyOrganizer/assets/www/contacts-detail.html"/>
+</file>
+<file factoryID="org.eclipse.ui.ide.FileStoreEditorInputFactory" id="com.aptana.editor.js" name="config.js" tooltip="/Users/aboutone/Documents/EclipseWorkspace/AboutOneFamilyOrganizer/assets/www/config.js">
+<persistable uri="file:/Users/aboutone/Documents/EclipseWorkspace/AboutOneFamilyOrganizer/assets/www/config.js"/>
+</file>
+<file factoryID="org.eclipse.ui.ide.FileStoreEditorInputFactory" id="com.aptana.editor.xml" name="config.xml" tooltip="/Users/aboutone/Documents/EclipseWorkspace/AboutOneFamilyOrganizer/assets/www/config.xml">
+<persistable uri="file:/Users/aboutone/Documents/EclipseWorkspace/AboutOneFamilyOrganizer/assets/www/config.xml"/>
+</file>
+</mruList>
+</workbench>

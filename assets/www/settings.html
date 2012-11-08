@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Settings</title>
+		<script type="text/javascript" src="jquery/jquery-1.7.2.min.js"></script>
+		<script type="text/javascript" src="cordova.js"></script>
+		<script type="text/javascript" src="config.js"></script>
+		<script type="text/javascript" src="base.js"></script>
+		
+		<link rel="stylesheet" type="text/css" href="bootstrap/css/ao-bootstrap.css" />
+		<link rel="stylesheet" type="text/css" href="bootstrap/css/font-awesome.css" />
+		<link rel="stylesheet" type="text/css" href="css/global.css" />
+		
+		<meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+		
+		<style>
+			body{
+				padding: 60px 15px 0 15px;
+			}
+			select{
+				margin:5px 0;
+			}
+			#auto-lock-value{
+				width:40px;
+			}
+			#auto-lock-unit{
+				width:80px;
+			}
+		</style>
+		
+	</head>
+	<body onload="assimilate();">
+		<img src="jquery/images/ajax-loader.png" id="loading-spinner" class="hide">
+		
+		<div class="header-bar">
+			<ul>
+				<li id="back-btn" onclick="handleBackButton()"><i class="icon-circle-arrow-left icon-large"></i></li>
+				<li>Settings</li>
+				<li onclick="sendFeedback()">
+					<i class="icon-ok-sign icon-large"></i>
+				</li>
+			</ul>
+		</div>
+		
+		<form class="form" id="settings-form">
+			<span class="ao-legend">Auto Lock<hr></span>
+			Lock the app after
+			<select id="auto-lock-value">
+				<option value="1">1</option>
+				<option value="3">3</option>
+				<option value="5">5</option>
+				<option value="10">10</option>
+				<option value="20">20</option>
+				<option value="30">30</option>
+				<option value="45">45</option>
+			</select>
+			<select id="auto-lock-unit">
+				<option value="60000">minutes</option>
+				<option value="3600000">hours</option>
+				<option value="86400000">days</option>
+			</select><br>
+			<span class="small-help-text">
+				Auto Lock will automatically lock the app after the specified 
+				time, which helps to secure your information 
+			</span>
+			<br><br>
+			<span class="ao-legend">Change Your Password<hr></span>
+			<input type="password" id="current-pass" placeholder="Current Password">
+			<input type="password" id="new-pass1" placeholder="New Password">
+			<input type="password" id="new-pass2" placeholder="Verify New Password">
+			<br><br>
+			<span class="ao-legend" id="pin-text">Change/Create PIN<hr></span>
+			<input type="tel" id="current-pin" placeholder="Current PIN">
+			<input type="tel" id="new-pin1" placeholder="New PIN">
+			<input type="tel" id="new-pin2" placeholder="Verify New PIN">
+		</form>
+		
+		
+	</body>
+	<script>
+	
+	function onPageReady(){
+		
+				
+		
+	}
+	
+	
+		
+	</script>
+</html>

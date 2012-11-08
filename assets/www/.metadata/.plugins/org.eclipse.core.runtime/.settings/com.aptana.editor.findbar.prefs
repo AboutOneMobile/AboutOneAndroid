@@ -1,0 +1,3 @@
+FIND_BAR_DECORATOR_FIND_ENTRIES=\#\n\#Tue Oct 30 14\:58\:13 MDT 2012\n9\=isBlank\n8\=while(isBlank\n7\=while (isBlank\n6\=(isBlank\n5\=apiEnvironment\n4\=import-nav-list\n3\=small-help-text\n2\=app-menu\n1\=share-div\n0\=share-results\n
+FIND_BAR_DECORATOR_REPLACE_ENTRIES=\#\n\#Tue Oct 16 14\:24\:56 MDT 2012\n2\=<\n1\=../cordova.js\n0\="../cordova.js"\n
+eclipse.preferences.version=1

@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html>
+	<head>
+	<title>Login</title>
+	<script type="text/javascript" src="jquery/jquery-1.7.2.min.js"></script>
+	<script type="text/javascript" src="cordova.js"></script>
+	<script type="text/javascript" src="jsrender.js"></script>
+	<script type="text/javascript" src="jstorage.js"></script>
+	<script type="text/javascript" src="config.js"></script>
+	<script type="text/javascript" src="base.js"></script>
+	<script type="text/javascript" src="login.js"></script>
+	
+	<link rel="stylesheet" type="text/css" href="bootstrap/css/ao-bootstrap.css" />
+	<link rel="stylesheet" type="text/css" href="bootstrap/css/font-awesome.css" />
+	<link rel="stylesheet" type="text/css" href="css/global.css" />
+	
+	<meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+	<script type="text/javascript">
+		
+	</script>
+	
+	</head>
+	<body onload="assimilate()">
+		<img src="jquery/images/ajax-loader.png" id="loading-spinner" class="hide">
+		<div class="header-bar">
+			<ul>
+				<li id="back-btn" onclick="goToMainLogin()">
+					<i class="icon-circle-arrow-left icon-large" id="back-icon" style="display:none;"></i>
+				</li>
+				<li><img src="images/logo_white.png"></li>
+				<li></li>
+			</ul>
+		</div>
+			
+		<form class="form-horizontal ao-form" id="main-login-form">
+			
+			<span class="ao-legend">Login to AboutOne<hr></span>
+			<div class="control-group">
+				<label class="control-label">
+					Email
+				</label>
+				<div class="controls">
+					<input type="email" class="input-medium" id="login-email" placeholder="you@youremail.com" value="">
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label">
+					Password
+				</label>
+				<div class="controls">
+					<input type="password" class="input-medium" id="login-password" placeholder="" value="">
+				</div>
+			</div>
+			<div class="control-group">
+				<div class="controls">
+					<a href="javascript:submitLoginForm()" class="btn btn-success btn-large">Login</a><br><br>
+<!-- 						<a href="https://login.aboutone.com/STS/ForgottenPassword" class="ao-label">Forgot your password?</a> -->
+				</div>
+			</div>
+			<span class="ao-legend">Don't have an account?<hr></span>
+			<div class="control-group">
+				<div class="controls">
+					<a href="#" class="btn btn-success btn-large" id="show-signup-form">Sign up for free!</a>
+				</div>
+			</div>
+		</form>
+		
+		<form class="form-horizontal ao-form hide" id="signup-form">
+			<div class="alert alert-error hide" id="login-alert">
+				<a class="close" href="#" id="login-alert-close"><i class="icon-remove"></i></a>
+				<h4 class="alert-heading" id="alert-heading">There was a problem...</h4>
+				<span id="login-alert-text"></span>
+			</div>
+			<span class="ao-legend">Signup for AboutOne<hr style="margin-bottom:10px;"></span>
+			<span>Fill out this quick form to create a new AboutOne account.  You can use this new account to log in to our mobile apps as well as
+				our AboutOne.com web app!</span><br><br>
+			<div class="control-group" id="signup-first-control">
+				<label class="control-label">
+					First Name
+				</label>
+				<div class="controls">
+					<input type="text" class="input-medium" id="signup-first-name" placeholder="" value="">
+				</div>
+			</div>
+			<div class="control-group" id="signup-last-control">
+				<label class="control-label">
+					Last Name
+				</label>
+				<div class="controls">
+					<input type="text" class="input-medium" id="signup-last-name" placeholder="" value="">
+				</div>
+			</div>
+			<div class="control-group" id="signup-email-control">
+				<label class="control-label">
+					Email
+				</label>
+				<div class="controls">
+					<input type="email" class="input-medium" id="signup-email" placeholder="" value="">
+				</div>
+			</div>
+			<div class="control-group" id="signup-password1-control">
+				<label class="control-label">
+					Password
+				</label>
+				<div class="controls">
+					<input type="password" class="input-medium" id="signup-password1" placeholder="" value="">
+				</div>
+			</div>
+			<div class="control-group" id="signup-password2-control">
+				<label class="control-label">
+					Verify Password
+				</label>
+				<div class="controls">
+					<input type="password" class="input-medium" id="signup-password2" placeholder="" value="">
+				</div>
+			</div>
+			<hr>
+			<span>You can also create an <em>optional</em> 4-digit PIN that will allow you to quickly login to 
+				this app again later.  Creating a PIN will also allow you to access your emergency contacts and
+				emergency health information while offline.</span><br><br>
+			<div class="control-group" id="signup-pin1-control">
+				<label class="control-label">
+					PIN
+				</label>
+				<div class="controls">
+					<input type="tel" id="signup-pin1" placeholder="" value="" class="pin-input">
+				</div>
+			</div>
+			<div class="control-group" id="signup-pin2-control">
+				<label class="control-label">
+					Verify PIN
+				</label>
+				<div class="controls">
+					<input type="tel" id="signup-pin2" placeholder="" value="" class="pin-input">
+				</div>
+			</div>
+			<div class="control-group">
+				<div class="controls">
+					<a href="javascript:submitSignUpForm()" class="btn btn-success btn-large">Signup</a>
+					<a href="javascript:goToMainLogin()" class="btn btn-large">Cancel</a>
+				</div>
+			</div>
+		</form>
+		
+		<form class="form-horizontal ao-form hide" id="pin-login-form">
+			<a href="javascript:goToMainLogin()" class="btn" id="back-to-main-login1"><i class="icon-chevron-left"></i> Back</a>
+			<br><br>
+			<span class="ao-legend">Login to AboutOne<hr></span>
+			Use your quick-login PIN to unlock your AboutOne account.  Or you can login using your username and password
+			by clicking the Back button above.
+			<br><br>
+			<div style="width: 240px; margin: 0 auto;">
+				<input type="tel" id="login-pin" placeholder="" value="" class="pin-input">
+			</div>
+		</form>
+		
+		<form class="form-horizontal ao-form hide" id="change-environment-form">
+			<a href="javascript:goToMainLogin()" class="btn" id="back-to-main-login1"><i class="icon-chevron-left"></i> Back</a>
+			<br><br>
+			<span class="ao-legend">Settings for Testing<hr></span>
+			<div style="color: red;">
+				<strong>FOR TESTING PURPOSES ONLY!</strong><br>
+				If you don't know what this page is for, please click the 'Back' button now.  <br><br>
+				<strong>VERSION: <span id="version-text"></span></strong>
+			</div><br>
+			<span class="ao-legend">API Environment<hr></span>
+				Use the controls below to change which
+				API Environment this app will point to.  Make sure you know what each environment is used for and that you know why you're
+				changing it.<br><br>
+			<div class="control-group">
+				<strong>Current Environment: <span id="curr-enviro"></span></strong><br>
+				<label class="control-label">
+					Environment
+				</label>
+				<div class="controls">
+					<label class="radio">
+						<input type="radio" name="enviro" id="enviro-qa"> QA
+					</label>
+					<label class="radio">
+						<input type="radio" name="enviro" id="enviro-dev"> Dev
+					</label>
+					<label class="radio">
+						<input type="radio" name="enviro" id="enviro-prod"> Production
+					</label>
+				</div>
+			</div>
+			<div class="control-group">
+				<div class="controls">
+					<a href="javascript:saveEnvironment()" id="login-with-pin" class="btn btn-success">Set Environment</a>
+				</div>
+			</div>
+			<span class="ao-legend">Clear All User Data<hr></span>
+				This will delete all user data for this installation of the app.  This will mean that this app will have absolutely no
+				information stored on it and you will have to log in again for the first time.<br><br>
+			<div class="control-group">
+				<div class="controls">
+					<a href="javascript:clearAllUserData()" id="login-with-pin" class="btn btn-danger">Delete All Data</a>
+				</div>
+			</div>
+			
+		</form>
+			
+			
+			
+		<div class="ao-modal-background hide"></div>
+		<div class="ao-modal hide" id="login-modal" style="background-color: white;">
+			<div class="modal-header">
+				<h3 id="login-modal-text"></h3>
+			</div>
+			<div class="modal-body center-text">
+				<h4>Please wait..</h4>
+				<img src="images/progress-bar.gif"><br>
+				<a href="javascript:hideModal('login-modal')" class="btn">Cancel</a>
+			</div>
+		</div>
+
+	</body>
+	
+	<script>
+	
+	</script>
+	
+</html>

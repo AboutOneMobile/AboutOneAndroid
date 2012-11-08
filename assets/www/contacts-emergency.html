@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Stream</title>
+		<script type="text/javascript" src="jquery/jquery-1.7.2.min.js"></script>
+		<script type="text/javascript" src="cordova.js"></script>
+		<script type="text/javascript" src="jsrender.js"></script>
+		<script type="text/javascript" src="jstorage.js"></script>
+		<script type="text/javascript" src="config.js"></script>
+		<script type="text/javascript" src="base.js"></script>
+		
+		<link rel="stylesheet" type="text/css" href="bootstrap/css/ao-bootstrap.css" />
+		<link rel="stylesheet" type="text/css" href="bootstrap/css/font-awesome.css" />
+		<link rel="stylesheet" type="text/css" href="css/global.css" />
+		
+		<meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+		
+		
+		<!-- CONTACT DETAIL TEMPLATE -->
+		<script id="grid-items-template" type="text/x-jquery-tmpl">
+			{{for Contacts}}
+				<li class="click-row" onclick="loadContact('{{:ContactId}}')">
+					<dl>
+						<dd>
+							{{if AvatarUrl}}
+								<img src="{{:AvatarUrl}}">
+							{{else}}
+								<img src="images/blank_person.png">
+							{{/if}}
+						</dd>
+						<dd>
+							<span class="title">{{:FirstName}} {{:LastName}}</span><br>
+							{{if Phone}}
+							<span class="description">{{:Phone}}</span>
+							{{else Email}}
+							<span class="description">{{:Email}}</span>
+							{{/if}}
+						</dd>
+					</dl>
+					<img src="images/fade-to-white.png" class="fade-to-white" />
+				</li>
+			{{/for}}
+		</script>
+		
+		<style>
+		
+		</style>
+		
+	</head>
+	<body onload="assimilate();">
+		<img src="jquery/images/ajax-loader.png" id="loading-spinner" class="hide">
+		<div class="header-bar">
+			<ul>
+				<li id="menu-btn" onclick="handleMenuButton()"><i class="icon-th-list icon-large"></i></li>
+				<li>Emergency</li>
+				<li></li>
+			</ul>
+		</div>
+		
+		<ul class="unstyled ao-list" id="family-list"></ul>
+		
+		
+		
+	</body>
+	<script>
+	
+	function onPageReady(){
+		var emerg = $.jStorage.get("_emergency_contacts_json");
+		$.each(emerg.Contacts, function(i, contact){
+			if(!isBlank(contact.AvatarId)){
+				contact.AvatarUrl = avatarUrl(contact.AvatarId, 60);
+			}
+		});
+		$('#family-list').append($('#grid-items-template').render(emerg));
+	}
+	
+	function loadContact(contactId) {
+		showLoading();
+		if(isBlank(contactId)){
+			alert("contact id is blank!");
+		}
+		apiGet(apiPath('contact/' + contactId), {}, function(json) {
+			if(!isBlank(json.Contact.AvatarId)){
+				json.Contact.AvatarUrl = avatarUrl(json.Contact.AvatarId, 400);
+			}
+			$.jStorage.set("_current_contact_json",json.Contact);
+			console.log("contact json:");
+			console.log(json.Contact);
+			hideLoading();
+			window.location.href = "contacts-detail.html";
+		});
+	}
+		
+	</script>
+</html>

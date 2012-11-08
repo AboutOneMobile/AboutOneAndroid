@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Stream</title>
+		<script type="text/javascript" src="jquery/jquery-1.7.2.min.js"></script>
+		<script type="text/javascript" src="cordova.js"></script>
+		<script type="text/javascript" src="jsrender.js"></script>
+		<script type="text/javascript" src="jstorage.js"></script>
+		<script type="text/javascript" src="config.js"></script>
+		<script type="text/javascript" src="base.js"></script>
+		
+		<link rel="stylesheet" type="text/css" href="bootstrap/css/ao-bootstrap.css" />
+		<link rel="stylesheet" type="text/css" href="bootstrap/css/font-awesome.css" />
+		<link rel="stylesheet" type="text/css" href="css/global.css" />
+		
+		<meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+		
+		
+		<!-- CONTACT IMPORT TEMPLATE -->
+		<script id="import-contact-template" type="text/x-jquery-tmpl">
+			<li class="select-item" rel="{{:SourceRecordId}}">
+				<dl>
+					<dd>
+						<i class="icon-user import-icon"></i>
+					</dd>
+					<dd>
+						<span class="title">{{:Name}}</span>
+					</dd>
+				</dl>
+			</li>
+		</script>
+		
+		<script id="import-letter-template" type="text/x-jquery-tmpl">
+			<li class="letter-divider subheader" id="{{:Letter}}">
+				<strong>{{:Letter}}</strong>
+			</li>
+		</script>
+		
+		<style>
+			.letter-divider{
+				height: 20px !important;
+				line-height: 20px;
+				font-size: 15px;
+				padding: 0 10px !important;
+				z-index: 1000;
+			}
+			body{
+				padding-top: 135px !important;
+				/*padding-right:34px;*/
+			}
+			.import-nav{
+				height: 50px;
+				width: 100%;
+				position: fixed;
+				top: 50px;
+				padding: 10px 0px 2px 0px;
+				background-color: white;
+				z-index: 1000;
+			}
+			.import-nav-list li{
+				float: left;
+				text-align: center;
+				margin-left: 15px;
+			}
+			.import-list{
+				list-style:none;
+				margin:0;
+				padding: 0;
+				box-shadow: 3px 3px 5px #888888;
+				z-index:0;
+			}
+			.import-list li{
+				height: 30px;
+				background-color:white;
+				border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+				border-left: 1px solid rgba(0, 0, 0, 0.2);
+				border-right: 1px solid rgba(0, 0, 0, 0.2);
+				padding: 10px 0 5px 0px;
+				overflow: hidden;
+			}
+			.import-list li dl{
+				list-style:none;
+				margin: 0;
+				padding: 0;
+			}
+			.import-list li dl dd{
+				float:left;
+				white-space: nowrap;
+				text-overflow: ellipsis;
+			}
+			.import-list li dl dd .import-icon{
+				margin-top: 5px;
+				display:block;
+			}
+			.import-list li dl dd:last-child{
+				width: 1%;
+				padding: 5px 10px 5px 0px;
+			}
+			.import-list li dl dd img{
+				width: 25px;
+			}
+			.import-list .divider{
+				padding: 5px 0 5px 10px;
+				display:block;
+				height: 15px;
+				background-color: green;
+				font-weight: bold;
+				color: white;
+				overflow: hidden;
+				font-size: 12px;
+			}
+			.main-divider{
+				width:100% !important;
+				background-color:#393 !important;
+				color:white; 
+				height:15px !important;
+				line-height:15px !important;
+				padding: 4px 10px !important;
+				position:fixed;
+				top:110px;
+				z-index: 1000;
+			}
+			#letter-nav{
+				height:100%; 
+				position:fixed; 
+				right:0; 
+				top:0;
+				line-height:10px;
+				font-size:8px;
+				width:15px;
+				z-index:10;
+				box-shadow: -2px 2px 2px #888;
+			}
+			#letter-nav-letters{
+				position:fixed;
+				top:140px;
+				right:0;
+				text-align:center;
+				padding: 0 12px;
+				z-index:10;
+			}
+		</style>
+		
+	</head>
+	<body onload="assimilate();">
+		<img src="jquery/images/ajax-loader.png" id="loading-spinner" class="hide">
+		<div class="header-bar">
+			<ul>
+				<li id="menu-btn" onclick="handleMenuButton()"><i class="icon-th-list icon-large"></i></li>
+				<li>Import Contacts</li>
+				<li></li>
+			</ul>
+		</div>
+		
+		
+		<div class="import-nav fix-pos subheader">
+			<ul class="import-nav-list unstyled">
+				<li><span>Import</span></li>
+				<li>
+					<a href="#" class="btn btn-success btn-large" id="import-all">All (<span id="all-count">0</span>)</a>
+				</li>
+				<li>
+					<a href="#" class="btn btn-warning btn-large disabled" id="import-selected">Selected (<span id="sel-count">0</span>)</a>
+				</li>
+			</ul>
+		</div>
+		
+		<ul class="unstyled import-list" id="import-list">
+			<li class="main-divider">Select 1 or more, or Import All</li>
+		</ul>
+		<!-- <div id="letter-nav" class="subheader">
+			<div id="letter-nav-letters">
+				A<br>B<br>C<br>D<br>E<br>F<br>G<br>H<br>I<br>J<br>K<br>
+				L<br>M<br>N<br>O<br>P<br>Q<br>R<br>S<br>T<br>U<br>V<br>
+				W<br>X<br>Y<br>Z
+			</div>
+		</div> -->
+		
+		
+		<!-- <div class="ao-modal-background hide"></div>
+		<div class="ao-modal hide" id="importModal" style="background-color: white;">
+			<div class="modal-header">
+				<h3 id="importModalHeader"></h3>
+			</div>
+			<div class="modal-body center-text">
+				<h4>This may take a few minutes</h4>
+				<h4>Please wait...</h4>
+				<img src="images/progress-bar.gif"><br>
+				<a href="javascript:goToContacts()" class="btn">Cancel</a>
+			</div>
+		</div> -->
+		
+	</body>
+	<script>
+	
+	function onPageReady(){
+		
+		getAndDisplayContacts();
+		
+		$("#import-list").touch("li.select-item", 
+			function(elem){
+				var icon = $(elem).find("i");
+				$(elem).toggleClass("highlight");
+				$(icon).toggleClass("import-icon");
+				$(icon).toggleClass("icon-ok");
+				$(icon).toggleClass("icon-white");
+				$(icon).toggleClass("icon-user");
+				$(icon).toggleClass("import-icon");
+				if($(elem).hasClass("highlight")){
+					numSelected += 1;
+				}else{
+					numSelected -= 1;
+				}
+				console.log("NUMBER SELECTED: " + numSelected);
+				$("#sel-count").text(numSelected);
+				$("#import-selected").removeClass("disabled");
+			}
+		);
+		
+		
+		$("#import-all").bind("touchstart", importAllPhoneContacts);
+		$("#import-selected").bind("touchstart", function(e){
+			e.preventDefault();
+			if($("#import-selected").hasClass("disabled")){
+				aoAlert("There are no contacts selected", "Cannot Import Yet");
+			}else{
+				importSelectedPhoneContacts();
+			}
+		});
+		
+		//set height of letter-nav links
+		var totalHeight = $(window).height() - 140; //height of window minus top bars
+		var letterHeight = totalHeight / 26;
+		$("#letter-nav").css("line-height", letterHeight+"px");
+		
+		//set letter-nav functionality
+		$("#letter-nav-letters").live("click",function(e){
+			e.preventDefault();
+			var perc = (e.offsetY / $(this).height());
+			var location = Math.round($(document).height() * perc) * 1.2;
+			console.log("scroll to: 0,"+location);
+			window.scrollTo(0, location);
+		});
+	}
+
+var numSelected = 0;
+function selectContact(){
+	var icon = $(this).find("i");
+	$(this).toggleClass("highlight");
+	$(icon).toggleClass("import-icon");
+	$(icon).toggleClass("icon-ok");
+	$(icon).toggleClass("icon-white");
+	$(icon).toggleClass("icon-user");
+	$(icon).toggleClass("import-icon");
+	if($(this).hasClass("highlight")){
+		numSelected += 1;
+	}else{
+		numSelected -= 1;
+	}
+	console.log("NUMBER SELECTED: " + numSelected);
+	$("#sel-count").text(numSelected);
+	$("#import-selected").removeClass("disabled");
+}
+
+function getAndDisplayContacts(){
+	showLoading();
+	var contactList = [];
+	function onGatherSuccess(contacts){
+		$.each(contacts, function(index, contact){
+			contact = processContact(contact);
+			if(!isBlank(contact)){
+				contactList.push(contact);
+			}
+		});
+		contactList.sort(sortBy('Name', false));
+		$("#all-count").text(contactList.length);
+		$.jStorage.set("_phone_contact_list", contactList); 
+		$.jStorage.setTTL("_phone_contact_list", 120000); // will die in 5 minutes
+		hideLoading();
+		var lastLetter = "";
+		$.each(contactList,function(i,person){
+			lastLetter = displayContact(person,lastLetter);
+		});
+	}
+	function onGatherError(error){
+		console.log("no contacts found on phone!!!");
+		aoAlert("We're sorry but there was an error while trying to gather the contacts from your phone. Please try again.","Contact Import Error");
+		goToContacts();
+	}
+	var options = new ContactFindOptions();
+	options.filter = "";          // empty search string returns all contacts
+	options.multiple = true;
+	var fields = ["displayName","name","id","nickname","phoneNumbers","emails","addresses","birthday","urls"];
+	navigator.contacts.find(fields, onGatherSuccess, onGatherError, options);
+}
+
+function displayContact(contact, lastLetter){
+	if(contact.Name){
+		var currLetter = contact.Name.substring(0,1).toUpperCase();
+		if(currLetter != lastLetter){
+			lastLetter = currLetter;
+			$("#import-list").append($("#import-letter-template").render({"Letter": lastLetter}));
+			// $("#letter-nav").append("<a href='#' rel='"+lastLetter+"'>"+lastLetter+"</a>")
+		}
+		$("#import-list").append($("#import-contact-template").render(contact));
+	}else{
+		console.log("skipping contact "+contact.SourceRecordId+" because no name");
+	}
+	return lastLetter;
+}
+
+function processContact(contact){
+	try{
+		var newbie = getNewContactJSON();
+		var person = contact;
+		var name = person.name;
+		if(person && name){
+			newbie.SourceRecordId = person.id ? person.id : "";
+			newbie.DisplayName = person.displayName ? person.displayName : "";
+			newbie.FirstName = name.givenName ? name.givenName : "";
+			newbie.LastName = name.familyName ? name.familyName : "";
+			newbie.MiddleName = name.middleName ? name.middleName : "";
+			newbie.Name = name.formatted ? name.formatted : 
+							(person.displayName ? person.displayName : 
+							((name.givenName && name.familyName) ? name.givenName+" "+name.familyName : ""));
+			var bday = person.birthday;
+			if(!isBlank(bday) && typeof(bday) == "object"){
+				newbie.BirthDate.Year = bday.getYear();
+				newbie.BirthDate.Day = bday.getDate();
+				newbie.BirthDate.Month = bday.getMonth();
+			}else if(!isBlank(bday) && typeof(bday) == "string"){
+				newbie.BirthDate.Display = bday;
+			}
+			newbie.NickName = name.nickname ? name.nickName : "";
+			if(person.addresses){
+				$.each(person.addresses,function(i,addr){
+					if(addr){
+						var address = {
+							"AddressType": addr.type ? addr.type : "",
+							"StateProvince": addr.region ? addr.region : "",
+							"CountryCode": addr.country ? addr.country : "",
+							"City": addr.locality ? addr.locality : "",
+							"PostCode": addr.postalCode ? addr.postalCode : "",
+							"Address1": addr.streetAddress ? addr.streetAddress : ""
+						};
+						newbie.Addresses.push(address);
+					}
+				});
+			}
+			if(person.phoneNumbers){
+				$.each(person.phoneNumbers,function(i,phone){
+					var newPhone = {
+						"CountryCode": "",
+						"IsPreferred": phone.pref ? phone.pref : "",
+						"PhoneType": phone.type ? phone.type : "",
+						"Phone": phone.value ? phone.value : ""
+					};
+					newbie.Phones.push(newPhone);
+				});
+			}
+			if(person.emails){
+				$.each(person.emails,function(i,email){
+					var newemail = {
+						"IsPreferred": email.pref,
+						"EmailType": email.type,
+						"Email": email.value
+					};
+					newbie.Emails.push(newemail);
+				});
+			}
+			return newbie;
+		}
+		return "";
+	}catch(ex){
+		console.log("ERROR WHILE PROCESSING CONTACT: " + JSON.stringify(contact));
+		return "";
+	}
+}
+	
+// IMPORTING CONTACTS
+function importAllPhoneContacts(){
+	var list = $.jStorage.get("_phone_contact_list");
+	sendPhoneContacts(list);
+}
+
+function importSelectedPhoneContacts(){
+	var selected = [];
+	var processed = $.jStorage.get("_phone_contact_list");
+	$.each($("li.highlight"), function(i, item){
+		var id = $(item).attr("rel");
+		$.each(processed, function(index, contact){
+			if(contact.SourceRecordId == id){
+				selected.push(contact);
+				return false;
+			}
+		});
+	});
+	uncheckAll();
+	sendPhoneContacts(selected);
+}
+
+function sendPhoneContacts(contacts){
+	showLoading();
+	var allContacts = {
+		"SourceName": "Mobile_"+device.platform,
+		"Contacts": contacts
+	};
+	if(allContacts.Contacts.length > 0){
+		apiPost(apiPath('Contact/Import'), allContacts, function(response) {
+			aoAlert("We have recieved "+contacts.length+" new contacts.\nWe are currently working on importing them to your account. "+
+			"This can take several minutes. You will be notified as soon as this process is complete.","Import Successful");
+			$.jStorage.set("_currently_importing_contacts", true);
+			$.jStorage.setTTL("_currently_importing_contacts", 43200000); //TTL: 12 hours
+			$.jStorage.set("_import_contact_count", 0);
+			$.jStorage.set("_import_contact_total", contacts.length);
+			goToContacts();
+			hideLoading();
+		}, "POST");
+	}else{
+		aoAlert("There was an error uploading contacts");
+	}
+}
+
+function uncheckAll(){
+	$("li.pressed").each(function(){
+		var check = $(this).find("input");
+		check.attr("checked", false);
+		$(this).removeClass("pressed");
+	});
+	$("#sel-count").text(0);
+	$("#import-selected").prop("disabled", true);
+}
+
+function getNewContactJSON(){
+	var send = {
+		"AvatarId": "",
+		"AvatarUrl": "",
+        "FirstName": "",
+        "LastName": "",
+        "MiddleName": "",
+        "Prefix": "",
+        "Suffix": "",
+        "NickName": "",
+        "PreferredLocale": "en-US",
+        "IsEmergencyContact": false,
+        "IsManagedContact": false,
+        "HideFromFamilyDisplays": false,
+        "ManagedContactRole": false,
+        "Gender": "",
+        "BirthDate": {
+            "Year": 0,
+            "Month": 0,
+            "Day": 0,
+            "Display": ""
+        },
+        "DeceasedDate": {
+            "Year": 0,
+            "Month": 0,
+            "Day": 0,
+            "Display": ""
+        },
+        "MaritalStatus": "",
+        "Anniversary": {
+            "Year": 0,
+            "Month": 0,
+            "Day": 0,
+            "Display": ""
+        },
+        "ContactType": "",
+        "SocialProfile": {
+            "Twitter": "",
+            "Facebook": "",
+            "Flickr": "",
+            "LinkedIn": "",
+            "Google": "",
+            "Live": "",
+            "Skype": ""
+        },
+        "Addresses": [],
+        "Phones": [],
+        "Emails": [],
+        "Websites": []
+    };
+    return send;
+}
+		
+</script>
+</html>

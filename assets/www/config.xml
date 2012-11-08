@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widget
+	xmlns			= "http://www.w3.org/ns/widgets"
+	xmlns:gap	= "http://phonegap.com/ns/1.0"
+	id				= "com.aboutone.aboutone"
+	version 	= "1.0.0"
+>
+
+	<access origin="*" />
+
+	<name>AboutOne</name>
+
+	<description>
+		AboutOne Mobile App
+	</description>
+
+	<author href="http://www.aboutone.com" email="support@aboutone.com">
+		AboutOne
+	</author>
+	
+	
+	
+	<preference name="webviewbounce" value="false" />
+	<preference name="orientation" value="portrait" />
+	<preference name="stay-in-webview" value="true" />
+	
+	<icon src="images/icons/AboutOne_36x36.png" gap:platform="android" gap:density="ldpi" />
+	<icon src="images/icons/AboutOne_48x48.png" gap:platform="android" gap:density="mdpi" />
+	<icon src="images/icons/AboutOne_72x72.png" gap:platform="android" gap:density="hdpi" />
+	
+	<icon src="images/icons/AboutOne_48x48.png" width="57" height="57"/>
+    <icon src="images/icons/AboutOne_72x72.png" width="72" height="72"/>
+    <icon src="images/icons/AboutOne_96x96.png" width="114" height="114"/>
+	
+	
+	
+</widget>
