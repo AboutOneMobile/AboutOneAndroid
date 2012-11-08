@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Stream</title>
+		<script type="text/javascript" src="jquery/jquery-1.7.2.min.js"></script>
+		<script type="text/javascript" src="cordova.js"></script>
+		<script type="text/javascript" src="jsrender.js"></script>
+		<script type="text/javascript" src="jstorage.js"></script>
+		<script type="text/javascript" src="config.js"></script>
+		<script type="text/javascript" src="base.js"></script>
+		
+		<link rel="stylesheet" type="text/css" href="bootstrap/css/ao-bootstrap.css" />
+		<link rel="stylesheet" type="text/css" href="bootstrap/css/font-awesome.css" />
+		<link rel="stylesheet" type="text/css" href="css/global.css" />
+		
+		<meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+		
+		<script id="contact-phone-template" type="text/x-jsrender">
+			<li id="phone-{{:Index}}" class="phone">
+				<select id="contact-phone-type" style="width:80px;">
+					<option value="home" {{if PhoneType=="home"}}selected{{/if}}>Home</option>
+					<option value="work" {{if PhoneType=="work"}}selected{{/if}}>Work</option>
+					<option value="mobile" {{if PhoneType=="mobile"}}selected{{/if}}>Mobile</option>
+					<option value="other" {{if PhoneType=="other"}}selected{{/if}}>Other</option>
+				</select>
+				<input type="tel" class="input-medium" placeholder="Phone" value="{{:Phone}}">
+			</li>
+		</script>
+		
+		<script id="contact-email-template" type="text/x-jsrender">
+			<li id="email-{{:Index}}" class="email">
+				<select id="contact-email-type"  style="width:80px;">
+					<option value="personal" {{if EmailType=="personal"}}selected{{/if}}>Personal</option>
+					<option value="work" {{if EmailType=="work"}}selected{{/if}}>Work</option>
+					<option value="other" {{if EmailType=="other"}}selected{{/if}}>Other</option>
+				</select>
+				<input type="email" class="input-medium" placeholder="Email" value="{{:Email}}">
+			</li>
+		</script>
+		
+		
+		<style>
+			.item-detail-list li dl dd:first-child{
+				min-width: 80px;
+				font-size: 13px;
+			}
+			.item-detail-list li dl dd:last-child{
+				width:65%;
+			}
+			.item-detail-list li dl dd{
+				padding: 10px 5px;
+			}
+			.item-detail-list li{
+				padding:10px;
+				max-width:92%;
+			}
+			#contact-photo-div{
+				background-position: center center;
+				background-size: 100%;
+			}
+			.check-box{
+				font-size: 18px;
+				line-height: 19px;
+			}
+			#photo-btns{
+				line-height: 60px;
+			}
+			#photo-btns a{
+				font-size:18px;
+			}
+			input,select{
+				margin:0;
+			}
+			.help i, #check-managed, #check-emergency{
+				font-size:20px;
+			}
+			#photo-row a{
+				float:left;
+				font-size:20px;
+				margin: 10px 0 0 10px;
+			}
+			#photo-row img{
+				float:left;
+			}
+		</style>
+	</head>
+	<body onload="assimilate();">
+		<img src="jquery/images/ajax-loader.png" id="loading-spinner" class="hide">
+		<div class="header-bar">
+			<ul>
+				<li id="menu-btn" onclick="handleMenuButton()"><i class="icon-th-list icon-large"></i></li>
+				<li id="header-text">Create a Contact</li>
+				<li id="save-contact" onclick="saveContact()"><i class="icon-ok-sign icon-large" id="ok-sign"></i></li>
+			</ul>
+		</div>
+		
+		<ul class="item-detail-list pull-left" id="contact-detail-container">
+			<li id="photo-row">
+				<img src="images/blank_person.png" class="thumbnail" id="contact-photo" style="width:60px; margin-left:10px;">
+				<a href="javascript:showModal('add-photo-modal')" class="" id="add-photo-btn">
+					<i class="icon-plus icon-white"></i>
+					Add Photo
+				</a>
+				<a href="javascript:showModal('update-photo-modal')" class="hide" id="update-photo-btn">
+					<i class="icon-refresh icon-white"></i>
+					Change Photo
+				</a>
+				<a href="#" class="hide" id="uploading-photo-btn">
+					Uploading Photo...
+				</a>
+			</li>
+			<li>
+				<select id="contact-type">
+					<option value="0" selected>Select a Contact Type...</option>
+					<option value="Individual">General Contact</option>
+					<option value="Group">Contact Group</option>
+					<option value="Pet">Pet</option>
+				</select>
+			</li>
+			<li id="name-block" style="padding:10px;">
+				<input type="text" placeholder="Full Name" id="contact-name">
+			</li>
+			<li id="check-block" style="line-height:25px; margin-right:15px">
+				<i class="icon-check-empty check-box" id="check-managed"></i>
+				<span class="description">Managed Contact</span>
+				<a href="#" class="help" 
+					title="Managed Contact"
+					rel="A Managed Contact can be a family member, pet, or other special contact you are managing in AboutOne">
+					<i class="icon-question-sign"></i>
+				</a>
+				<br>
+				<span id="emergency-stuff">
+					<i class="icon-check-empty check-box" id="check-emergency"></i>
+					<span class="description">Emergency Contact</span>
+					<a href="#" class="help" 
+						title="Emergency Contacts"
+						rel="This allows you to easily add this person to your Emergency Contacts list">
+						<i class="icon-question-sign"></i>
+					</a>
+				</span>
+			</li>
+			<li id="pet-block" style="line-height:40px; display:none;">
+				<select id="pet-type">
+					<option value="-1">Select Pet Kind</option>
+					<option value="1">Amphibian</option>
+					<option value="2">Bird</option>
+					<option value="3">Cat</option>
+					<option value="4">Dog</option>
+					<option value="5">Equine</option>
+					<option value="6">Fish</option>
+					<option value="7">Reptile</option>
+					<option value="8">Small Mammal</option>
+					<option value="0">Other</option>
+				</select><br>
+				<i class="icon-check-empty" style="font-size:20px;" id="pet-spayed"></i> Spayed or Neutered<br>
+				<input type="text" placeholder="ID Chip or Tattoo Number" id="pet-chip"><br>
+				<input type="text" placeholder="License Number" id="pet-license"><br>
+				<input type="text" placeholder="AKC Registration Number" id="pet-purebred">
+			</li>
+			<li id="phone-block" class="new-phone">
+				<select id="contact-phone-type" style="width:80px;">
+					<option value="home">Home</option>
+					<option value="work">Work</option>
+					<option value="mobile" selected>Mobile</option>
+					<option value="other">Other</option>
+				</select>
+				<input type="tel" class="input-medium" placeholder="Add New Phone" id="contact-phone">
+			</li>
+			<li id="email-block" class="new-email">
+				<select id="contact-email-type"  style="width:80px;">
+					<option value="personal" selected>Personal</option>
+					<option value="work">Work</option>
+					<option value="other">Other</option>
+				</select>
+				<input type="email" class="input-medium" placeholder="Add New Email" id="contact-email">
+			</li>
+			<li id="relationship-block" class="hide">
+				<select id="contact-relationship">
+				    <option value="-1" selected>Select a relationship...</option>
+			        <option value="Self">Yourself</option>
+			        <option value="Spouse">Your Spouse</option>
+			        <option value="Child">Your Child</option>
+			        <option value="Stepchild">Your Stepchild</option>
+			        <option value="Domestic Partner">Your Domestic Partner</option>
+			        <option value="Guardian">Your Guardian</option>
+			        <option value="Parent">Your Parent</option>
+			        <option value="Grandparent">Your Grandparent</option>
+			        <option value="Grandchild">Your Grandchild</option>
+			        <option value="Relative">Your Relative</option>
+			        <option value="Stepparent">Your Stepparent</option>
+			        <option value="sibling">Your Sibling</option>
+			        <option value="Stepsibling">Your Stepsibling</option>
+			        <option value="Ex-spouse">Your Ex-spouse</option>
+			        <option value="Other">Other</option>
+			    </select>
+			</li>
+			<li id="health-block" class="hide" style="line-height:40px;">
+				Height
+				<input type="number" placeholder="0" id="contact-height-ft" style="width:30px;"> ft.
+				<input type="number" placeholder="0" id="contact-height-in" style="width:30px; margin-left:10px"> in.<br>
+				Weight
+				<input type="number" placeholder="0" id="contact-weight" style="width:50px;"> lbs.<br>
+				Blood Type
+				<select id="contact-blood-type" style="width:100px;">
+					<option value="-1">Select</option>
+					<option value="4">A+</option>
+					<option value="3">A-</option>
+					<option value="6">B+</option>
+					<option value="5">B-</option>
+					<option value="2">O+</option>
+					<option value="1">O-</option>
+					<option value="7">AB+</option>
+					<option value="8">AB-</option>
+				</select>
+				<span id="blood-type-date"></span>
+			</li>
+			<li id="delete-row" class="center-text hide">
+				<a href="javascript:deleteContact()" class="btn btn-danger btn-large" style="width:80%;">
+					<i class="icon-trash icon-large"></i>
+					Delete Contact
+				</a>
+			</li>
+		</ul>
+		
+		<div class="ao-modal-background hide"></div>
+		<div class="ao-modal hide" id="add-photo-modal">
+			<div class="modal-header">
+				<h3>Add a photo</h3>
+			</div>
+			<div class="modal-body">
+				<h4>Would you like to add a photo to this contact?</h4>
+				<span class="description">To add a photo, please select one of the options below...</span><br><br>
+				<a href="javascript:getPhoto(true, false)" class="btn btn-success btn-large"><i class="icon-camera"></i> Take a new photo</a><br>
+				<a href="javascript:getPhoto(false, false)" class="btn btn-success btn-large"><i class="icon-picture"></i> Use an existing photo</a><br>
+				<a href="javascript:hideModal('add-photo-modal')" class="btn btn-large" >Cancel</a>
+			</div>
+		</div>
+		<div class="ao-modal hide" id="update-photo-modal">
+			<div class="modal-header">
+				<h3>Update photo</h3>
+			</div>
+			<div class="modal-body">
+				<h4>Would you like to update the photo for this contact?</h4>
+				<span class="description">To update the photo, please select one of the options below...</span><br><br>
+				<a href="javascript:getPhoto(true, false)" class="btn btn-success btn-large"><i class="icon-camera"></i> Take a new photo</a><br>
+				<a href="javascript:getPhoto(false, false)" class="btn btn-success btn-large"><i class="icon-picture"></i> Use an existing photo</a><br>
+				<a href="javascript:hideModal('update-photo-modal')" class="btn btn-large" >Cancel</a>
+			</div>
+		</div>
+		
+	</body>
+	<script>
+	
+	var now_editing = false;
+	
+	function onPageReady(){
+		
+		$("i.check-box").click(function(e){
+			e.preventDefault();
+			$(this).toggleClass("icon-check-empty");
+			$(this).toggleClass("icon-check");
+			$(this).toggleClass("active");
+			var temp = $.jStorage.get("_temp_contact_json");
+			if($(this).attr("id") == "check-managed"){
+				var limit = $.jStorage.get("managed_limit_status");
+				if(limit == "Over"){
+					aoAlert("You've reached the maximum number of managed contacts allowed on a free account.  To upgrade your account, "+
+						"please visit AboutOne.com and sign in to view your pricing options.","Upgrade Your Account");
+				}else if(limit == "Near"){
+					aoAlert("You're nearing the maximum number of managed contacts allowed on a free account.  To upgrade your account, "+
+						"please visit AboutOne.com and sign in to view your pricing options.","Upgrade Your Account");
+				}
+				if(temp.ContactKind == "Individual"){
+					$("#relationship-block").toggle();
+					$("#health-block").toggle();
+				}
+				temp.IsManagedContact = $(this).hasClass("icon-check");
+			}
+			$.jStorage.set("_temp_contact_json", temp);
+		});
+		
+		$("#pet-spayed").click(function(e){
+			e.preventDefault();
+			$(this).toggleClass("icon-check");
+			$(this).toggleClass("icon-check-empty");
+			var temp = $.jStorage.get("_temp_contact_json");
+			temp.IsSpayedOrNeutered = $(this).hasClass("icon-check");
+			$.jStorage.set("_temp_contact_json", temp);
+		});
+		
+		$("#contact-type").change(function(e){
+			var kind = $(this).val();
+			var temp = $.jStorage.get("_temp_contact_json");
+			temp.ContactKind = kind;
+			console.log(kind);
+			switch(kind){
+				case "Pet":
+					$("#pet-block").show();
+					$("#contact-name").attr("placeholder","Pet's Name");
+					$("#emergency-stuff").hide();
+					break;
+				case "Group":
+					$("#contact-name").attr("placeholder","Group's Name");
+					$("#check-block").hide();
+					break;
+				default:
+					$("#check-block").show();
+					$("#pet-block").hide();
+					$("#emergency-stuff").show();
+					$("#contact-name").attr("placeholder","Full Name");
+					break;
+			}
+			$.jStorage.set("_temp_contact_json", temp);
+		});
+		
+		if($.jStorage.get("_new_family_contact") == true){
+			$.jStorage.set("_new_family_contact", false);
+			$.jStorage.set("_temp_contact_json", newcontact());
+			$("#check-managed").click();
+			$("#contact-type").val("Individual");
+		}else if($.jStorage.get("_update_current_contact") == true){
+			showLoading();
+			var oldjson = $.jStorage.get("_current_contact_json");
+			var contactInfo = $.extend(true, {}, oldjson);
+			$.jStorage.set("_temp_contact_json", contactInfo);
+			now_editing = true;
+			$("#delete-row").show();
+			$("#header-text").text("Edit a Contact");
+			$("#contact-name").val(contactInfo.Name);
+			$("#contact-type").val(contactInfo.ContactKind);
+			if(contactInfo.ContactKind == "Pet"){
+				$("#pet-type").val(contactInfo.PetKind);
+				if(contactInfo.IsSpayedOrNeutered){
+					$("#pet-spayed").click();
+				}
+				$("#pet-chip").val(contactInfo.IdChipRegistrationNumber);
+				$("#pet-license").val(contactInfo.LicenseNumber);
+				$("#pet-purebred").val(contactInfo.PurebredRegistrationNumber);
+				$("#emergency-stuff").hide();
+				$("#pet-block").show();
+			}
+			var list = $('#contact-detail-container');
+			$.each(contactInfo.Phones, function(i, phone){
+				phone.Index = i;
+				$("#phone-block").before($('#contact-phone-template').render(phone));
+			});
+			$.each(contactInfo.Emails, function(i, email){
+				email.Index = i;
+				$("#email-block").before($('#contact-email-template').render(email));
+			});
+			if(!isBlank(contactInfo.AvatarId)){
+				$("#contact-photo").attr("src", avatarUrl(contactInfo.AvatarId, 400));
+				$("#add-photo-btn").hide();
+				$("#update-photo-btn").show();
+			}
+			if(contactInfo.IsManagedContact == true){
+				$("#check-managed").click();
+				if(!isBlank(contactInfo.HealthProfile)){
+					var profile = contactInfo.HealthProfile;
+                    if(profile.Height && profile.Height.Value){
+                        var total = profile.Height.Value;
+                        var feet = Math.floor(total/12);
+                        var inches = total % 12;
+                        $("#contact-height-ft").val(feet);
+                        $("#contact-height-in").val(inches);
+                    }
+                    if(profile.Weight && profile.Weight.Value){
+                        $("#contact-weight").val(profile.Weight.Value);
+                    }
+                    if(profile.BloodType){
+                        $("#contact-blood-type").val(profile.BloodType);
+                    }
+				}
+				$("#contact-relationship").val(contactInfo.ManagedContactRole);
+			}
+			if(contactInfo.IsEmergencyContact == true){
+				$("#check-emergency").click();
+			}
+			$("#save-btn").hide();
+			$("#update-btn").show();
+			$("#delete-btn").show();
+			$.jStorage.set("_update_current_contact", false);
+			hideLoading();
+		}else{
+			$.jStorage.set("_temp_contact_json", newcontact());
+		}
+		
+		$(".new-phone input").live("focus",function(e){
+			var block = $(this).parents(".new-phone")[0];
+			var copy = $(block).clone();
+			$(copy).find("input").blur();
+			$(block).after($(copy).appendTo($(block)));
+		});
+		$(".new-email input").live("focus",function(e){
+			var block = $(this).parents(".new-email")[0];
+			var copy = $(block).clone();
+			$(block).after($(copy).appendTo($(block)));
+		});
+		$(".new-phone input").live("blur",function(e){
+			if(isBlank($(this).val())){
+				var next = $($(this).parents("li")[0]).next();
+				if($(next).hasClass("new-phone")){
+					var nextInput = $(next).find("input");
+					if(isBlank($(nextInput).val())){
+						$(next).remove();
+					}
+				}
+			}
+		});
+		$(".new-email input").live("blur",function(e){
+			if(isBlank($(this).val())){
+				var next = $($(this).parents("li")[0]).next();
+				if($(next).hasClass("new-email")){
+					var nextInput = $(next).find("input");
+					if(!isBlank(nextInput) && isBlank($(nextInput).val())){
+						$(next).remove();
+					}
+				}
+			}
+		});
+		
+		$(".help").click(function(e){
+			e.preventDefault();
+			aoAlert($(this).attr("rel"), $(this).attr("title"));
+		});
+		
+		
+	}
+	
+	
+	function saveContact(){
+		if(now_editing){
+			updateContact();
+		}else{
+			addNewContact();
+		}
+	}
+	
+	function updateContact(){
+		if($("#uploading-photo-btn").is(":visible")){
+			aoAlert("The contact's photo still being uploaded.  Please wait until the photo has finished uploading before saving your entry.",
+				"Photo Uploading...");
+		}else{
+			$("input").blur();
+			showLoading();
+			var temp = $.jStorage.get("_temp_contact_json");
+			var newName = $("#contact-name").val().trim();
+			if(!isBlank(newName) && temp.Name != newName){
+				temp.Name = newName;
+				temp.FirstName = "";
+				temp.LastName = "";
+				temp.MiddleName = "";
+			}
+			$.each(temp.Phones, function(i, phone){
+				var block = $("#phone-"+i);
+				var value = block.find("input").val().trim();
+				if(!isBlank(value)){
+					var type = block.find("option:selected").val();
+					phone.PhoneType = type;
+					phone.Phone = value;
+				}
+				
+			});
+			$.each($(".new-phone"), function(i, phone){
+				var value = $(phone).find("input").val().trim();
+				if(!isBlank(value)){
+					var obj = newphone();
+					obj.PhoneType = $(phone).find("option:selected").val();
+					obj.Phone = $(phone).find("input").val().trim();
+					temp.Phones.push(obj);
+				}
+			});
+			$.each(temp.Emails, function(i, email){
+				var block = $("#email-"+i);
+				var value = block.find("input").val().trim();
+				if(!isBlank(value)){
+					var type = block.find("select option:selected").val();
+					email.EmailType = type;
+					email.Email = value;
+				}
+			});
+			$.each($(".new-email"), function(i, email){
+				var value = $(email).find("input").val().trim();
+				if(!isBlank(value)){
+					var obj = newemail();
+					obj.EmailType = $(email).find("option:selected").val();
+					obj.Email = value;
+					temp.Emails.push(obj);
+				}
+			});
+			if(temp.ContactKind == "Pet"){
+				temp.PetKind = $("#pet-type").val();
+				temp.IdChipRegistrationNumber = $("#pet-chip").val();
+				temp.LicenseNumber = $("#pet-license").val();
+				temp.PurebredRegistrationNumber = $("#pet-purebred").val();
+			}
+			if($("#check-managed").hasClass("active") && temp.ContactKind == "Individual"){
+				var tempprofile = healthprofile();
+				var feet = parseInt($("#contact-height-ft").val().trim());
+				var inches = parseInt($("#contact-height-in").val().trim());
+				temp.IsManagedContact = true;
+				console.log(feet,inches);
+				if(isNaN(feet) && isNaN(inches)){
+					tempprofile.Height = null;
+					tempprofile.HeightDate = null;
+				}else{
+					console.log('setting height values');
+					tempprofile.Height.Value = (isNaN(feet) || isNaN(inches)) ? null : (feet * 12) + inches;
+					tempprofile.HeightDate = newdate();
+				}
+				tempprofile.Weight.Value = $("#contact-weight").val().trim();
+				if(isBlank(tempprofile.Weight.Value)){
+					tempprofile.Weight = null;
+					tempprofile.WeightDate = null;
+				}else{
+					tempprofile.WeightDate = newdate();
+				}
+				var blood = $("#contact-blood-type").val();
+				if(blood != "-1"){
+					tempprofile.BloodType = blood;
+					tempprofile.BloodTypeDate = newdate();
+				}else{
+					tempprofile.BloodType = null;
+					tempprofile.BloodTypeDate = null;
+				}
+				if(isBlank(tempprofile.Height) && isBlank(tempprofile.Weight) && isBlank(tempprofile.BloodType)){
+					temp.HealthProfile = null;
+				}else{
+					temp.HealthProfile = tempprofile;
+				}
+				console.log(JSON.stringify(temp.HealthProfile));
+				if(isBlank(temp.HealthProfile) && !isBlank(tempprofile)){
+					tempprofile.ContactId = temp.ContactId;
+					temp.HealthProfile = tempprofile;
+				}else{
+					var prof = temp.HealthProfile;
+					if(!isBlank(tempprofile.Height)){
+						temp.HealthProfile.Height = tempprofile.Height;
+						temp.HealthProfile.HeightDate = tempprofile.HeightDate
+					}
+					if(!isBlank(tempprofile.Weight)){
+						temp.HealthProfile.Weight = tempprofile.Weight;
+						temp.HealthProfile.WeightDate = tempprofile.WeightDate;
+					}
+					if(!isBlank(tempprofile.BloodType)){
+						temp.HealthProfile.BloodType = tempprofile.BloodType;
+						temp.HealthProfile.BloodTypeDate = tempprofile.BloodTypeDate;
+					}
+				}
+				var relation = $("#contact-relationship").val();
+				if(relation != "-1" && (isBlank(temp.ManagedContactRole) || temp.ManagedContactRole != relation)){
+					temp.ManagedContactRole = relation;
+				}
+			}else{
+				temp.IsManagedContact = false;
+			}
+			temp.IsEmergencyContact = $("#check-emergency").hasClass("active");
+			temp.Action = 2;
+//			delete temp.__type;
+			console.log(JSON.stringify(temp));
+			apiPost(apiPath('Contact/'+temp.ContactId), temp, function(json) {
+				$.jStorage.set("_current_contact_json", temp);
+				var all = $.jStorage.get('contact_list_array');
+				$.each(all, function(i, contact){
+					if(contact.id == temp.ContactId){
+						var nameParts = temp.Name.split(" ");
+						all[i] = {
+							"label":temp.Name,
+							"first":nameParts[0],
+							"last":nameParts[nameParts.length-1],
+							"pic":avatarUrl(temp.AvatarId, 25),
+							"picID":temp.AvatarId,
+							"id":temp.ContactId,
+							"share": !isBlank(temp.Emails)
+						};
+						return false;
+					}
+				});
+				if(temp.IsManagedContact == true && temp.ContactKind == "Individual"){
+					if(!isBlank(temp.HealthProfile)){
+						apiPost(apiPath('Contact/'+temp.ContactId+"/health"), temp.HealthProfile, function(json) {
+							console.log("UPDATED HEALTH PROFILE: " + JSON.stringify(json));
+							hideLoading();
+							$.jStorage.deleteKey("_temp_contact_json");
+							window.location.href = "contacts-detail.html";
+						}, "POST");
+					}
+					
+				}else{
+					hideLoading();
+					$.jStorage.deleteKey("_temp_contact_json");
+					window.location.href = "contacts-detail.html";
+				}
+			}, "POST");
+			
+			
+		}
+	}
+	
+	function addNewContact(){
+		if($("#uploading-photo-btn").is(":visible")){
+			aoAlert("The contact's photo still being uploaded.  Please wait until the photo has finished uploading before saving your entry.",
+				"Photo Uploading...");
+		}else{
+			$("input").blur();
+			showLoading();
+			var temp = $.jStorage.get("_temp_contact_json");
+			var newName = $("#contact-name").val().trim();
+			temp.Name = newName;
+			$.each($(".new-phone"), function(i, phone){
+				var value = $(phone).find("input").val().trim();
+				if(!isBlank(value)){
+					var obj = newphone();
+					obj.PhoneType = $(phone).find("option:selected").val();
+					obj.Phone = $(phone).find("input").val().trim();
+					temp.Phones.push(obj);
+				}
+			});
+			$.each($(".new-email"), function(i, email){
+				var value = $(email).find("input").val().trim();
+				if(!isBlank(value)){
+					var obj = newemail();
+					obj.EmailType = $(email).find("option:selected").val();
+					obj.Email = value;
+					temp.Emails.push(obj);
+				}
+			});
+			if($("#check-managed").hasClass("active")){
+				var tempprofile = healthprofile();
+				var feet = parseInt($("#contact-height-ft").val().trim());
+				var inches = parseInt($("#contact-height-in").val().trim());
+				tempprofile.Height.Value = (feet * 12) + inches;
+				tempprofile.Weight.Value = $("#contact-weight").val().trim();
+				var blood = $("#contact-blood-type").val();
+				if(blood != "-1"){
+					tempprofile.BloodType = blood;
+				}
+				if(isBlank(tempprofile.Height.Value) && isBlank(tempprofile.Weight.Value) && isBlank(tempprofile.BloodType)){
+					temp.HealthProfile = null;
+				}else{
+					if(isBlank(tempprofile.Height.Value)){
+						tempprofile.Height = null;
+						tempprofile.WeightDate = null;
+					}if(isBlank(tempprofile.Weight.Value)){
+						tempprofile.Weight = null;
+						tempprofile.WeightDate = null;
+					}if(isBlank(tempprofile.BloodType)){
+						tempprofile.BloodType = null;
+						tempprofile.BloodTypeDate = null;
+					}
+					temp.HealthProfile = tempprofile;
+				}
+				temp.IsManagedContact = true;
+				var relation = $("#contact-relationship").val();
+				if(relation != "-1" && (isBlank(temp.ManagedContactRole) || temp.ManagedContactRole != relation)){
+					temp.ManagedContactRole = relation;
+				}
+			}
+			console.log(JSON.stringify(temp));
+			apiPost(apiPath('Contact'), temp, function(json) {
+				temp.ContactId = json.ContactId;
+				$.jStorage.set("_current_contact_json", temp);
+				$.jStorage.deleteKey("_temp_contact_json");
+				var contactsArray = $.jStorage.get('contact_list_array');
+				var nameParts = temp.Name.split(" ");
+				contactsArray.push({
+					"label":temp.Name,
+					"first":nameParts[0],
+					"last":nameParts[nameParts.length-1],
+					"pic":avatarUrl(temp.AvatarId, 25),
+					"picID":temp.AvatarId,
+					"id":json.ContactId,
+					"share": !isBlank(temp.Emails)
+				});
+				contactsArray.sort(sortBy('label', false, function(a){return a.toUpperCase()}));
+				$.jStorage.set('contact_list_array', contactsArray);
+				if(temp.IsManagedContact == true){
+					if(!isBlank(temp.HealthProfile)){
+						apiPost(apiPath('Contact/'+temp.ContactId+"/health"), temp.HealthProfile, function(json) {
+							console.log("ADDED HEALTH PROFILE: " + JSON.stringify(json));
+							hideLoading();
+							window.location.href = "contacts-detail.html";
+						}, "POST");
+					}
+					var managed = $.jStorage.get("_managed_contacts_json");
+					managed.Contacts.push(temp);
+					$.jStorage.set("_managed_contacts_json",temp);
+				}else{
+					hideLoading();
+					window.location.href = "contacts-detail.html";
+				}
+			}, "PUT");
+		}
+		
+	}
+	
+	function deleteContact(){
+		var temp = $.jStorage.get("_temp_contact_json");
+		if(!isBlank(temp.ContactId)){
+			aoConfirm(function(){
+				showLoading();
+				var temp = $.jStorage.get("_temp_contact_json");
+				console.log(apiPath('contact/' + temp.ContactId ));
+				apiPost(apiPath('contact/' + temp.ContactId ), {}, function(json) {
+					var all = $.jStorage.get('contact_list_array');
+					$.each(all, function(i, contact){
+						if(contact.id == temp.ContactId){
+							all.splice(i, 1);
+							$.jStorage.set('contact_list_array', all);
+							aoAlert(temp.Name+"'s contact record was deleted successfully","Contact Deleted");
+							return false;
+						}
+					});
+					hideLoading();
+					goToContacts();
+				}, "DELETE");
+			},"Are you sure you want to delete "+temp.Name+"'s contact record?", "Delete Contact");
+		}
+	}
+	
+	function getPhoto(camera, video){
+		getMedia(camera, video, 
+			function(imageUri){ // onSuccess
+				$("#contact-photo").attr("src",imageUri);
+				// $("#contact-photo-div").empty();
+				// $("#contact-photo-div").css("background-image"," url("+imageUri+")");
+				$("#add-photo-btn").hide();
+				$("#update-photo-btn").hide();
+				$("#uploading-photo-btn").show();
+			},
+			function(error){ // onUploadError
+				$("#"+tempID).remove();
+			},
+			function(obj){ // onUploadSuccess
+				$("#add-photo-btn").hide();
+				$("#update-photo-btn").show();
+				$("#uploading-photo-btn").hide();
+	            var temp = $.jStorage.get("_temp_contact_json");
+	            temp.AvatarId = obj.MediaItemId;
+	            $.jStorage.set("_temp_contact_json", temp);
+			}
+		);
+	}
+	
+	function newcontact(){
+		return {
+			"AvatarId": "",
+	        "Name": "",
+	        "IsEmergencyContact": false,
+	        "IsManagedContact": false,
+	        "HideFromFamilyDisplays": false,
+	        "ContactType": "IndividualContactDetail",
+	        "Phones": [],
+	        "Emails": [],
+	        "SocialProfile": {
+	            "Twitter": "",
+	            "Facebook": "",
+	            "Flickr": "",
+	            "LinkedIn": "",
+	            "Google": "",
+	            "Live": "",
+	            "Skype": ""
+	        },
+	        "Addresses":[],
+	        "HealthProfile": null
+	        //{"AddressType":"work","Address1":"123 Easy Street","Address2":"","Address3":"","City":"","StateProvince":"","PostCode":"","CountryCode":""}
+	    };
+	}
+	
+	function newphone(){
+		return {
+			"PhoneType":"other",
+			"Phone":"",
+			"CountryCode":"",
+			"IsPreferred":false
+		}
+	}
+	
+	function newemail(){
+		return {
+			"EmailType":"other",
+			"Email":"",
+			"IsPreferred":false
+		}
+	}
+	
+	function healthprofile(){
+		return {
+			"ContactId":"",
+			"BloodType":1,
+			"BloodTypeDate": newdate(),
+			"Height":{
+				"Value":0,"Unit":1
+			},
+			"HeightDate": newdate(),
+			"Weight":{
+				"Value":0,
+				"Unit":2
+			},
+			"WeightDate": newdate()
+		}
+	}
+	
+	function newdate(){
+		var date = new Date();
+		return {
+			"Year": date.getFullYear(),
+			"Month": (date.getMonth() + 1),
+			"Day": date.getDate(),
+			"Display": (date.getMonth() + 1)+"/"+date.getDate()+"/"+date.getFullYear()
+		}
+	}
+	
+		
+	</script>
+</html>

@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Stream</title>
+		<script type="text/javascript" src="jquery/jquery-1.7.2.min.js"></script>
+		<script type="text/javascript" src="cordova.js"></script>
+		<script type="text/javascript" src="jsrender.js"></script>
+		<script type="text/javascript" src="jstorage.js"></script>
+		<script type="text/javascript" src="config.js"></script>
+		<script type="text/javascript" src="base.js"></script>
+		<script type="text/javascript" src="stream.js"></script>
+		
+		<link rel="stylesheet" type="text/css" href="bootstrap/css/ao-bootstrap.css" />
+		<link rel="stylesheet" type="text/css" href="bootstrap/css/font-awesome.css" />
+		<link rel="stylesheet" type="text/css" href="css/global.css" />
+		
+		<meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+		
+		<script id="streamListItemTemplate" type="text/x-jquery-tmpl">
+			<li class="stream-list-item" onclick="loadItem('{{:ItemId}}')">
+				<dl>
+					<dd>
+						<img src="{{:AvatarUrl}}" style="border: 1px solid rgba(0, 0, 0, 0.2);">
+					</dd>
+					<dd>
+						<span class="title">{{:Title}}</span><br>
+						<span class="description">{{:Description}}</span>
+					</dd>
+				</dl>
+				<div class="stream-fader" style="width:40px;">
+					<i class="icon-chevron-right arrow"></i>
+				</div>
+			</li>
+		</script>
+		
+		<script id="streamListEmptyTemplate" type="text/x-jquery-tmpl">
+			<li onclick="goToItems()">
+				<dl>
+					<dd>
+						<img src="images/stream-75.png" style="border: 1px solid rgba(0, 0, 0, 0.2);">
+					</dd>
+					<dd>
+						<span class="title">You have no entries</span><br>
+						<span class="description">Tap here to add some now!</span>
+					</dd>
+				</dl>
+				<div class="stream-fader" style="width:40px;">
+					<i class="icon-chevron-right arrow"></i>
+				</div>
+			</li>
+		</script>
+		
+		<script id="streamApprovedEmptyTemplate" type="text/x-jquery-tmpl">
+			<li id="approved-empty" class="approved-share">
+				<dl>
+					<dd>
+						<img src="images/stream-75.png" style="border: 1px solid rgba(0, 0, 0, 0.2);">
+					</dd>
+					<dd>
+						<span class="title">No Shared Entries</span><br>
+						<span class="description">You have not approved any shares</span>
+					</dd>
+				</dl>
+			</li>
+		</script>
+
+        <script id="streamSearchEmptyTemplate" type="text/x-jquery-tmpl">
+            <li class="rendered-item" onclick="goToItems()">
+                <dl>
+                    <dd>
+                        <span class="title">No Entries Found</span><br>
+                        <span class="description">Your search/filter didn't match any entries</span>
+                    </dd>
+                </dl>
+            </li>
+        </script>
+		
+		<script id="stream-divider-template" type="text/x-jquery-tmpl">
+			<li class="ao-list-divider" id="{{:Id}}">
+				<dl>
+					<dd style="padding:0;">
+						{{:Text}}
+					</dd>
+				</dl>
+			</li>
+		</script>
+		
+		<script id="stream-share-pending-template" type="text/x-jquery-tmpl">
+			<li style="height:80px;" id="{{:ItemId}}" class="pending-share">
+				<dl>
+					<dd>
+						<img src="{{:AvatarUrl}}" style="border: 1px solid rgba(0, 0, 0, 0.2);">
+					</dd>
+					<dd style="padding: 0 10px 0 0;">
+						<span class="title">{{:Title}}</span><br>
+						<span class="description">from {{:SharedBy}}</span><br><br>
+						<a href="javascript:acceptShare('{{:ItemId}}')" class="accept"><i class="icon-ok"></i> Accept</a>
+						<a href="javascript:rejectShare('{{:ItemId}}')" class="reject"><i class="icon-remove"></i> Ignore</a>
+					</dd>
+				</dl>
+			</li>
+		</script>
+		
+		<script id="stream-list-shared-template" type="text/x-jquery-tmpl">
+			<li class="stream-list-item approved-share" onclick="loadItem('{{:ItemId}}', true)">
+				<dl>
+					<dd>
+						<img src="{{:AvatarUrl}}" style="border: 1px solid rgba(0, 0, 0, 0.2);">
+					</dd>
+					<dd>
+						<span class="title">{{:Title}}</span><br>
+						<span class="small-help-text">Shared by {{:Sharer.Name}}</span>
+					</dd>
+				</dl>
+				<div class="stream-fader" style="width:40px;">
+					<i class="icon-chevron-right arrow"></i>
+				</div>
+			</li>
+		</script>
+		
+		<style>
+		body{
+			padding-top:135px;
+		}
+		#stream-tools{
+			padding:10px;
+			width:100%; 
+			position:fixed;
+			top:50px;
+			border-bottom:5px solid #a08659;
+			box-shadow: 0px 3px 3px rgba(0, 0, 0, 0.25);
+			overflow:hidden;
+		}
+		#stream-filter-container{
+			padding:5px 0;
+			height:90px;
+			border-bottom:2px solid #a08659;
+		}
+		#stream-shared, #stream-mine{
+			margin: 0 12px;
+			padding:2px 5px;
+			border-radius: 5px;
+			color: #c6b089;
+		}
+		#stream-shared.active, #stream-mine.active{
+			color: #ffbf00;
+		}
+		#stream-shared.selected, #stream-mine.selected{
+			color:#a08659;
+		}
+		#stream-arrow{
+			background-color: #a08659;
+			width:20px;
+			height:20px;
+			-webkit-transform: rotate(45deg);
+			margin: 8px 0 0 5px;
+			z-index: 554;
+			position:absolute;
+			left: 35px;
+		}
+		#share-count{
+			border-radius: 15px;
+			padding: 2px 6px;
+			margin: -20px 0 0 -12px;
+			color:white;
+			background-color: #3A87AD;
+			display:inline-block;
+			font-size: 12px;
+		}
+		.accept, .reject{
+			border-radius:5px;
+			color:white;
+			padding:6px 8px;
+			width:40px;
+		}
+		.accept{
+			background-color:#393;
+		}
+		.reject{
+			background-color:#CC0000;
+		}
+			
+		</style>
+		
+	</head>
+	<body onload="assimilate();">
+		<img src="jquery/images/ajax-loader.png" id="loading-spinner" style="display:none;">
+		<div class="header-bar">
+			<ul>
+				<li id="menu-btn" onclick="handleMenuButton()"><i class="icon-th-list icon-large"></i></li>
+				<li><img src="images/logo_white.png"></li>
+				<li id="add-entry"><i class="icon-edit icon-large"></i></li>
+			</ul>
+		</div>
+        <img src="images/tulips.jpg" id="test-image" class="hide">
+		<div id="stream-tools" class="subheader" style="">
+			<a href="javascript:toggleFilter()" class="btn btn-success" style="margin-right:10px" id="filter-btn"><i class="icon-filter icon-white"></i></a>
+			<div class="input-append" style="display:inline-block; width:85%; ">
+				<input id="stream-search-input" type="text" class="input-medium tall" placeholder="Stream Search" style="width:75%;">
+				<a href="#" id="stream-search-btn" class="btn btn-success btn-append"><i class="icon-search icon-white"></i></a>
+			</div>
+			<br>
+			<span class="title selected" id="stream-mine">Mine</span>
+			<span class="title" id="stream-shared">Shared With Me</span>
+			<div id="share-count" style="display:none;">0</div>
+			<!-- <br>
+			<div id="stream-arrow"></div> -->
+		</div>
+		<div style="display:none;" class="subheader" id="stream-filter-container">
+			<div id="stream-filter-controls">
+				<span class="title" style="margin-left:10px;"> <i class="icon-filter"></i> <span id="filter-text">Family Filter</span></span>
+				<a href="javascript:toggleFilter()">
+					<i class="icon-remove icon-white icon-large pull-right" style="margin:3px 10px 0 0;"></i>
+				</a>
+			</div>
+			<div id="stream-filter-scroll">
+				<div id="stream-filter-menu"></div>
+			</div>
+		</div>
+		<div class="hide no-overflow subheader" id="search-results" style="padding:15px 15px 10px 15px; height:20px; border-bottom:2px solid #a08659;">
+			<span class="title no-wrap">Results for: '<span id="results-for">search</span>'</span>
+			<i class="icon-remove icon-white icon-large pull-right" style="margin-right:10px;" id="clear-search"></i>
+		</div>
+		
+		<ul class="unstyled ao-list" id="stream-list"></ul>
+		
+		<ul class="unstyled ao-list hide" id="stream-shared-list">
+			<li class="ao-list-divider" id="pending-divider" style="display:none;">
+				<dl>
+					<dd style="padding:0;">
+						Pending Shares
+					</dd>
+				</dl>
+			</li>
+			<li class="hide" id="pending-loading">
+				<dl>
+					<dd>
+						<img src="images/progress-bar-arrows.gif" style="border: 1px solid rgba(0, 0, 0, 0.2); background-image:none;">
+					</dd>
+					<dd>
+						<span class="title">Loading</span><br>
+						<span class="description">Please wait...</span>
+					</dd>
+				</dl>
+			</li>
+			<li class="ao-list-divider" id="approved-divider">
+				<dl>
+					<dd style="padding:0;">
+						Approved Shares
+					</dd>
+				</dl>
+			</li>
+			<li id="approved-loading">
+				<dl>
+					<dd>
+						<img src="images/progress-bar-arrows.gif" style="border: 1px solid rgba(0, 0, 0, 0.2); background-image:none;">
+					</dd>
+					<dd>
+						<span class="title">Loading</span><br>
+						<span class="description">Please wait...</span>
+					</dd>
+				</dl>
+			</li>
+		</ul>
+		
+		<div class="ao-modal-background hide"></div>
+		<div class="ao-modal hide" id="add-login-pin">
+		    <div class="modal-header">
+		        <h3>Quick Login PIN</h3>
+		    </div>
+		    <div class="modal-body">
+		        <h4>Would you like to create a PIN?</h4>
+		        <span class="description">To secure your private information, you will be periodically logged out and will be asked to login again. You can create
+		            an <em>optional</em> quick-login PIN that will allow you to log back in more quickly.</span><br><br>
+		        <a href="#" class="btn btn-success btn-large" id="create-pin-btn">Create a PIN now</a><br>
+		        <a href="#" class="btn btn-warning btn-large" id="remind-pin-btn">Remind me later</a><br>
+		        <a href="#" class="btn btn-large" id="dont-prompt-btn">Don't show this again</a>
+		    </div>
+		</div>
+		
+		
+		
+	</body>
+	<script>
+		
+	</script>
+</html>

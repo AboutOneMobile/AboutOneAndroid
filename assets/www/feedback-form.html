@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Stream</title>
+		<script type="text/javascript" src="jquery/jquery-1.7.2.min.js"></script>
+		<script type="text/javascript" src="cordova.js"></script>
+		<script type="text/javascript" src="jstorage.js"></script>
+		<script type="text/javascript" src="config.js"></script>
+		<script type="text/javascript" src="base.js"></script>
+		
+		<link rel="stylesheet" type="text/css" href="bootstrap/css/ao-bootstrap.css" />
+		<link rel="stylesheet" type="text/css" href="bootstrap/css/font-awesome.css" />
+		<link rel="stylesheet" type="text/css" href="css/global.css" />
+		
+		<meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+		
+		<style>
+			.star{
+				font-size: 50px;
+				color: gold;
+				text-shadow: 2px 2px 2px orange;
+				-webkit-text-stroke: 2px orange;
+			}
+		</style>
+		
+	</head>
+	<body onload="assimilate();">
+		<img src="jquery/images/ajax-loader.png" id="loading-spinner" class="hide">
+		<div class="header-bar">
+			<ul>
+				<li id="back-btn" onclick="handleBackButton()"><i class="icon-circle-arrow-left icon-large"></i></li>
+				<li>Rate AboutOne</li>
+				<li onclick="sendFeedback()">
+					<i class="icon-ok-sign icon-large"></i>
+				</li>
+			</ul>
+		</div>
+		
+		<form class="form ao-form">
+			<h5>We are always looking to improve AboutOne.  Please take a moment to tell us about your experience with this app.</h5><br>
+			<div class="control-group">
+				<label class="control-label">
+					App Rating:
+				</label>
+				<div class="controls" id="star-div" style="padding-top:8px;">
+					<!-- <img src="images/rating-star-empty-60.png" class="rating-star">
+					<img src="images/rating-star-empty-60.png" class="rating-star">
+					<img src="images/rating-star-empty-60.png" class="rating-star">
+					<img src="images/rating-star-empty-60.png" class="rating-star">
+					<img src="images/rating-star-empty-60.png" class="rating-star"> -->
+					<i class="icon-star-empty star"></i>
+					<i class="icon-star-empty star"></i>
+					<i class="icon-star-empty star"></i>
+					<i class="icon-star-empty star"></i>
+					<i class="icon-star-empty star"></i>
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label">
+					Comments:
+				</label>
+				<div class="controls">
+					<textarea rows="8" class="input-large" id="feedback-comments" placeholder=""></textarea>
+				</div>
+			</div>
+		</form>
+		
+	</body>
+	<script>
+	
+	function onPageReady(){
+		
+		$("#feedback-username").val( userName() );
+		
+		$(".star").bind("click",function(e){
+			e.preventDefault();
+			var rating = $(this).index() + 1;
+			$(".star").each(function(){
+				if($(this).index() < rating){
+					$(this).addClass("icon-star");
+					$(this).removeClass("icon-star-empty");
+				}else{
+					$(this).addClass("icon-star-empty");
+					$(this).removeClass("icon-star");
+				}
+			});
+			$.jStorage.set("feedback_rating", rating);
+		});
+		
+		$("#feedback-send").bind("click",function(e){
+			e.preventDefault();
+			var rate = $.jStorage.get("feedback_rating");
+			if(isBlank(rate)){
+				rate = 0;
+			}
+			var deviceInfo = "|Sent from desktop| :";
+			if(typeof(device) != 'undefined'){
+				deviceInfo = "|Platform: '"+device.platform+"'|Version: '"+device.version+"'|Device: '"+device.name+"'|: ";
+			}
+			var	comments = deviceInfo + $("#feedback-comments").val();
+			sendFeedback(comments, rate);
+		});
+		
+		
+	}
+	
+	function sendFeedback(){
+		var rate = $.jStorage.get("feedback_rating");
+		var deviceInfo = "|Sent from desktop| :";
+		if(typeof(device) != 'undefined'){
+			deviceInfo = "|Platform: "+device.platform+"|Version: "+device.version+"|Device: "+device.name+"|AppVersion: "+release_version+"| - ";
+		}
+		var feedback = {
+			"Comments" : deviceInfo + $("#feedback-comments").val(),
+			"Rating": isBlank(rate) ? 0 : rate
+		};
+		
+		//https://dev.go.aboutone.com:8080/10/user/feedback?applicationKey=E2A58EF3A47141BFB10B6B1147EB706E&authToken=F5719713AB494B1190F008F17EE634AE&cache=24234234234236
+		//https://dev.go.aboutone.com:8080/10/user/feedback?applicationKey=E2A58EF3A47141BFB10B6B1147EB706E&authToken=04501529C84744A0AC0E82E473004773&cache=24234234234236
+		
+		// console.log(apiPath('user/feedback'));
+		var path = apiPath('user/feedback');
+	   console.log(path);
+	    $.ajax({
+			"async" : true,
+			"type" : "POST",
+			"dataType" : "json",
+			"contentType" : "application/json; charset=utf-8",
+			"accepts" : "json",
+			"url" : path,
+			"data" : JSON.stringify(feedback),
+			"success" : function(jqXHR, textStatus, errorThrown) {
+				console.log(path + " - " + JSON.stringify(feedback));
+			 	console.log("SUCCESS: ", JSON.stringify(jqXHR));
+			 	if(jqXHR.ErrorCode == 0){
+			 		aoAlert("We have received your feedback. Thank you for your help and " + 
+						"patience as we do our best to make your experience a good one.", "Feedback Received");
+			 	}else{
+			 		aoAlert("An error occurred while sending your feedback:\n"+JSON.stringify(jqXHR), "Feedback Error");
+			 	}
+			 	goToStream();
+			},
+			"error" : function(jqXHR, textStatus, errorThrown) {
+			 	console.log("ERROR: ",JSON.stringify(jqXHR));
+			}
+	    });
+	}
+	
+	
+		
+	</script>
+</html>

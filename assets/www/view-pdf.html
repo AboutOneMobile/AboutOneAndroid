@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Stream</title>
+		<script type="text/javascript" src="jquery/jquery-1.7.2.min.js"></script>
+		<script type="text/javascript" src="cordova.js"></script>
+		<script type="text/javascript" src="jstorage.js"></script>
+		<script type="text/javascript" src="config.js"></script>
+		<script type="text/javascript" src="js/jquery.gdocsviewer.js"></script>
+		<script type="text/javascript" src="base.js"></script>
+		
+		
+		<link rel="stylesheet" type="text/css" href="bootstrap/css/ao-bootstrap.css" />
+		<link rel="stylesheet" type="text/css" href="bootstrap/css/font-awesome.css" />
+		<link rel="stylesheet" type="text/css" href="css/global.css" />
+		
+		<meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+		
+	</head>
+	<body onload="assimilate();">
+		<img src="jquery/images/ajax-loader.png" id="loading-spinner" class="hide">
+		<div class="header-bar">
+			<ul>
+				<li id="back-btn" onclick="handleBackButton()"><i class="icon-circle-arrow-left icon-large"></i></li>
+				<li>PDF Viewer</li>
+				<li></li>
+			</ul>
+		</div>
+		
+		
+		<a href="#" id="pdf-url"></a>
+		
+	</body>
+	<script>
+	
+	function onPageReady(){
+		//showLoading();
+		
+		var file_url = $.jStorage.get("current_pdf_url");
+		
+		$("#pdf-url").attr("href", file_url);
+		console.log($("#pdf-url").attr("href"));
+		
+		$("#pdf-url").gdocsViewer();
+		
+		$("#pdf-url").click();
+		
+	}
+		
+	</script>
+</html>

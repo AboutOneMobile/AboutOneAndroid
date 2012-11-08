@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="JSHintConfiguration">
+    <option eqeqeq="true" />
+    <option forin="true" />
+    <option noarg="true" />
+    <option nonew="true" />
+    <option debug="true" />
+    <option undef="true" />
+    <option boss="true" />
+    <option browser="true" />
+    <option jquery="true" />
+    <option maxerr="50" />
+  </component>
+</project>
+

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Stream</title>
+		<script type="text/javascript" src="jquery/jquery-1.7.2.min.js"></script>
+		<script type="text/javascript" src="cordova.js"></script>
+		<script type="text/javascript" src="jsrender.js"></script>
+		<script type="text/javascript" src="jstorage.js"></script>
+		<script type="text/javascript" src="config.js"></script>
+		<script type="text/javascript" src="base.js"></script>
+		<script type="text/javascript" src="contacts.js"></script>
+		
+		<link rel="stylesheet" type="text/css" href="bootstrap/css/ao-bootstrap.css" />
+		<link rel="stylesheet" type="text/css" href="bootstrap/css/font-awesome.css" />
+		<link rel="stylesheet" type="text/css" href="css/global.css" />
+		
+		<meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+		
+		
+
+		
+
+		<style>
+			.waiting{
+				width:15px !important;
+				height:15px !important;
+				max-width:15px;
+				background-image: none !important;
+			}
+		    .importing{
+                width:15px !important;
+                height:15px !important;
+                background-image: none;
+                margin-bottom: -3px;
+                max-width: none;
+            }
+		
+		</style>
+	</head>
+	<body onload="assimilate();">
+		<img src="jquery/images/ajax-loader.png" id="loading-spinner" style="display:none;">
+		<div class="header-bar">
+			<ul>
+				<li id="menu-btn" onclick="handleMenuButton()"><i class="icon-th-list icon-large"></i></li>
+				<li>Contacts</li>
+				<li id="add-entry"><i class="icon-edit icon-large"></i></li>
+			</ul>
+		</div>
+		
+		<ul class="unstyled ao-list" id="contact-list">
+			<li class="click-row" rel="showFamilyGrid()" id="family-btn">
+				<dl>
+					<dd>
+						<span class="title">Family</span><br>
+						<span class="description" id="family-text">
+							<img src="images/progress-bar-arrows.gif" class="waiting">
+							Loading...
+						</span>
+					</dd>
+				</dl>
+				<img src="images/fade-to-white.png" class="fade-to-white" />
+			</li>
+			<li class="click-row" rel="showGroupsGrid()" id="groups-btn">
+				<dl>
+					<dd>
+						<span class="title">Contact Groups</span><br>
+						<span class="description" id="group-text">
+							<img src="images/progress-bar-arrows.gif" class="waiting">
+							Loading...
+						</span>
+					</dd>
+				</dl>
+				<img src="images/fade-to-white.png" class="fade-to-white" />
+			</li>
+			<li class="click-row" rel="showEmergencyGrid()" id="emergency-btn">
+				<dl>
+					<dd>
+						<span class="title">Emergency Contacts</span><br>
+						<span class="description" id="emergency-text">
+							<img src="images/progress-bar-arrows.gif" class="waiting">
+							Loading...
+						</span>
+					</dd>
+				</dl>
+				<img src="images/fade-to-white.png" class="fade-to-white" />
+			</li>
+			<li class="click-row" rel="showAllContacts()" id="all-contacts-btn">
+				<dl>
+					<dd>
+						<span class="title">All Contacts</span><br>
+						<span class="description" id="all-contact-text">You have <span id="all-count">0</span> total contacts</span>
+					</dd>
+				</dl>
+				<img src="images/fade-to-white.png" class="fade-to-white" />
+			</li>
+			<li class="click-row" rel="addNewContact()" id="new-contact-btn">
+				<dl>
+					<dd>
+						<span class="title">Add a New Contact</span><br>
+						<span class="description" id="all-contact-text">Tap here to add a contact to AboutOne</span>
+					</dd>
+				</dl>
+				<img src="images/fade-to-white.png" class="fade-to-white" />
+			</li>
+			<li class="click-row" rel="goToImportContacts()" id="import-btn">
+                <dl>
+                    <dd>
+                        <span class="title" id="import-title">Import Phone Contacts</span><br>
+                        <span class="description" id="import-desc">Import your contacts to AboutOne</span>
+                    </dd>
+                </dl>
+                <img src="images/fade-to-white.png" class="fade-to-white" />
+            </li>
+			<li class="hide" id="import-progress-btn">
+				<dl>
+					<dd>
+						<span class="title" id="import-title">Contact Import In Progress...</span><br>
+                        <span class="description">We'll let you know when its done</span>
+                        <img src="images/progress-bar-arrows.gif" class="importing">
+					</dd>
+				</dl>
+			</li>
+		</ul>
+		
+	</body>
+	<script>
+	
+		
+	</script>
+</html>

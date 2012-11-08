@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Stream</title>
+		<script type="text/javascript" src="jquery/jquery-1.7.2.min.js"></script>
+		<script type="text/javascript" src="cordova.js"></script>
+		<script type="text/javascript" src="jstorage.js"></script>
+		<script type="text/javascript" src="config.js"></script>
+		<script type="text/javascript" src="base.js"></script>
+		
+		<link rel="stylesheet" type="text/css" href="bootstrap/css/ao-bootstrap.css" />
+		<link rel="stylesheet" type="text/css" href="bootstrap/css/font-awesome.css" />
+		<link rel="stylesheet" type="text/css" href="css/global.css" />
+		
+		<meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+		
+	</head>
+	<body onload="assimilate();">
+		<img src="jquery/images/ajax-loader.png" id="loading-spinner" style="display:none;">
+		<div class="header-bar">
+			<ul>
+				<li id="menu-btn" onclick="handleMenuButton()"><i class="icon-th-list icon-large"></i></li>
+				<li>All Contacts</li>
+				<li></li>
+			</ul>
+		</div>
+		
+		<ul class="unstyled ao-list" id="all-contacts-list">
+			<li style="padding-left:10px; height:35px;">
+				<div class="input-append">
+					<input id="contact-search-input" type="text" class="input-medium tall" placeholder="Contact Search" style="width:75%;">
+					<a href="#" id="contact-search" type="button" class="btn btn-success btn-append"><i class="icon-search icon-white"></i></a>
+				</div>
+			</li>
+			<li class="contact-search-li" id="contact-search-li">
+				<div id="contact-search-results">
+					<dl class="contact-search-result-dl" id="contact-search-result-dl"></dl>
+				</div>
+			</li>
+			
+			
+		</ul>
+		
+	</body>
+	<script>
+	
+function onPageReady(){
+	$("#contact-search").bind("click",contactSearch);
+	$("#search-clear-btn").on("touchstart",function(){
+		$("#contact-search-input").val("");
+		displayContactList();
+	});
+	
+	$("#contact-search-result-dl").touch("dd.contact-search-dd", function(){
+		// loadContact($(this).attr("rel"));
+	});
+	
+	displayContactList();
+}
+	
+function displayContactList(){
+	var all = $.jStorage.get('contact_list_array');
+	if(!isBlank(all)){
+		showLoading();
+		$("#contact-search-result-dl").empty();
+		var lastLetter = "";
+		$.each(all, function(index, contact){
+			var currLetter = contact.label.substring(0,1).toUpperCase();
+			if(currLetter != lastLetter){
+				lastLetter = currLetter;
+				$("#contact-search-result-dl").append("<li class='ao-list-divider'><span>"+lastLetter+"</span></li>");
+			}
+			var html = "<dd class='contact-search-dd' onclick=loadContact('"+contact.id+"')><img src='"+contact.pic+"'><span>"+contact.label+
+				"</span><i class='icon-chevron-right'></i></dd>";
+			$("#contact-search-result-dl").append(html);
+		});
+		$("#contact-search-result-dl").append("<dd class='contact-search-dd'>blahblah</dd>");
+		hideLoading();
+	}
+}
+
+function contactSearch(){
+	showLoading();
+	var val = $("#contact-search-input").val().trim();
+	var term = val.toLowerCase();
+	var chars = term.length;
+	var all = $.jStorage.get('contact_list_array');
+	$("#contact-search-result-dl").empty();
+	var found = false
+	$("#contact-search-result-dl").append("<li class='ao-list-divider'><span>Results for '"+val+"'</span><a href='#' class='btn btn-mini' id='search-clear-btn'>Clear</a></li>");
+	$.each(all, function(index, contact){
+		if(!isBlank(contact.first) || !isBlank(contact.last)){
+			var match1 = contact.first.substr(0,chars).toLowerCase().indexOf(term) != -1;
+			var match2 = contact.last.substr(0,chars).toLowerCase().indexOf(term) != -1;
+			if(match1 || match2){
+				found = true;
+				$("#contact-search-result-dl").append("<dd class='contact-search-dd' rel='"+contact.id+"'>"+contact.label+"<i class='icon-chevron-right'></i></dd>");
+			}
+		}
+	});
+	if(!found){
+		console.log("no contact found");
+		$("#contact-search-result-dl").append("<dd class='contact-search-dd'>No such contact: '"+val+"'</dd>");
+	}
+	$("#contact-search-result-dl").append("<dd class='contact-search-dd'>blahblah</dd>");
+	hideLoading();
+}
+
+function loadContact(contactId) {
+	showLoading();
+	apiGet(apiPath('contact/' + contactId), {}, function(json) {
+		if(!isBlank(json.Contact.AvatarUrl)){
+			json.Contact.AvatarUrl += appendKeyAndToken()+"&square=400";
+		}
+		$.jStorage.set("_current_contact_json",json.Contact);
+		console.log("contact json:");
+		console.log(JSON.stringify(json.Contact));
+		console.log(json.Contact);
+		hideLoading();
+		window.location.href = "contacts-detail.html";
+	});
+}
+		
+</script>
+</html>

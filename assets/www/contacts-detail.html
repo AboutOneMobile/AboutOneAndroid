@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Stream</title>
+		<script type="text/javascript" src="jquery/jquery-1.7.2.min.js"></script>
+		<script type="text/javascript" src="cordova.js"></script>
+		<script type="text/javascript" src="jsrender.js"></script>
+		<script type="text/javascript" src="jstorage.js"></script>
+		<script type="text/javascript" src="config.js"></script>
+		<script type="text/javascript" src="base.js"></script>
+		
+		<link rel="stylesheet" type="text/css" href="bootstrap/css/ao-bootstrap.css" />
+		<link rel="stylesheet" type="text/css" href="bootstrap/css/font-awesome.css" />
+		<link rel="stylesheet" type="text/css" href="css/global.css" />
+		
+		<meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+		
+		<style>
+			.note-btn{
+				background-color:#393;
+				color:white;
+				margin:2px 4px;
+				border-radius:5px;
+				font-size:13px;
+				padding: 3px 0 1px 3px;
+				margin: -4px 0 0 0;
+			}
+			.accept{
+				color:#393;
+				font-size:30px;
+				float:left;
+			}
+			.reject{
+				color:#CC0000;
+				font-size:30px;
+				float:left;
+				margin-top:15px;
+			}
+			.note-btn i{
+				font-size:15px;
+			}
+		</style>
+		
+		
+		<!-- CONTACT DETAIL TEMPLATE -->
+		<script id="contact-detail-template" type="text/x-jquery-tmpl">
+			<li>
+				<dl>
+					<dd>
+						{{if AvatarUrl}}
+							<img src="{{:AvatarUrl}}" style="width:60px;"/>
+						{{else}}
+							<img src="images/contact-placeholder.png" style="width:60px;"/>
+						{{/if}}
+					</dd>
+					<dd class="text-left" style="max-width:60% !important;">
+						<h3 style="word-wrap: break-word; display:inline-block; float:left; width:100%;">
+							{{:Name}}
+						</h3>
+						{{if IsManagedContact}}
+							<br><span class="small-help-text">Managed Contact</span>
+						{{/if}}
+						{{if IsEmergencyContact}}
+							<br><span class="small-help-text">Emergency Contact</span>
+						{{/if}}		
+						{{if ContactKind == "Pet"}}
+							<br><span class="small-help-text">
+								Pet 
+								{{if PetKind == 1}}- Amphibian{{/if}}
+								{{if PetKind == 2}}- Bird{{/if}}
+								{{if PetKind == 3}}- Cat{{/if}}
+								{{if PetKind == 4}}- Dog{{/if}}
+								{{if PetKind == 5}}- Equine{{/if}}
+								{{if PetKind == 6}}- Fish{{/if}}
+								{{if PetKind == 7}}- Reptile{{/if}}
+								{{if PetKind == 8}}- Small Mammal{{/if}}
+								{{if PetKind == 0}}- Other{{/if}}
+							</span>
+						{{/if}}	
+					</dd>
+					
+				</dl>
+			</li>
+			{{if ContactKind == "Pet"}}
+				<li>
+					<dl>
+						<dd>Pet Info</dd>
+						<dd>
+							Spayed/Neutered: {{if IsSpayedOrNeutered}}Yes{{else}}No{{/if}}<br>
+							Chip/Tattoo #: {{if IdChipRegistrationNumber}}{{:IdChipRegistrationNumber}}{{else}}None{{/if}}<br>
+							License #: {{if LicenseNumber}}{{:LicenseNumber}}{{else}}None{{/if}}<br>
+							AKC #: {{if PurebredRegistrationNumber}}{{:PurebredRegistrationNumber}}{{else}}None{{/if}}
+						</dd>
+					</dl>
+				</li>
+			{{/if}}
+			{{if Phones && Phones.length > 0}}
+				{{for Phones}}
+					<li class="click-row" href="tel:{{:Phone}}">
+						<dl>
+							<dd><span class="capitalize">{{:PhoneType}}</span></dd>
+							<dd>
+								<a href="tel:{{:Phone}}">
+									<i class="icon-phone"> </i>
+									{{:Phone}}
+								</a>
+							</dd>
+						</dl>
+					</li>
+				{{/for}}
+			{{/if}}
+			{{if Emails && Emails.length > 0}}
+				{{for Emails}}
+					<li class="click-row" href="mailto:{{:Email}}">
+						<dl>
+							<dd><span class="capitalize">{{:EmailType}}</span></dd>
+							<dd>
+								<a href="mailto:{{:Email}}">
+									<i class="icon-envelope"></i>
+									{{:Email}}
+								</a>
+							</dd>
+						</dl>
+					</li>
+				{{/for}}
+			{{/if}}
+			{{if Addresses && Addresses.length > 0}}
+				{{for Addresses}}
+					<li>
+						<dl>
+							<dd><span class="capitalize">{{:AddressType}}</span></dd>
+							<dd>
+								{{if Address1}}{{:Address1}}<br>{{/if}}
+								{{if Address2}}{{:Address2}}<br>{{/if}}
+								{{if Address3}}{{:Address3}}<br>{{/if}}
+								{{if City}}{{:City}}, {{/if}}
+								{{if StateProvince}}{{:StateProvince}} {{/if}}
+								{{if PostCode}}{{:PostCode}}{{/if}}
+								{{if CountryCode}}<br>{{:CountryCode}}{{/if}}
+							</dd>
+						</dl>
+					</li>
+				{{/for}}
+			{{/if}}
+			{{if Websites && Websites.length > 0}}
+				{{for Websites}}
+					<li class="click-row">
+						<dl>
+							<dd><span class="capitalize">{{:WebsiteType}}</span></dd>
+							<dd>
+								<a href="{{:Url}}">
+									<i class="icon-globe"></i>
+									{{:Url}}
+								</a>
+							</dd>
+						</dl>
+					</li>
+				{{/for}}
+			{{/if}}
+			{{if IsManagedContact && ContactKind != "Pet"}}
+				{{if HealthProfile && HealthProfile.Height && HealthProfile.Height.Value}}
+					<li>
+						<dl>
+							<dd>Health</dd>
+							<dd>
+								<table class="table table-bordered" style="width:100%; margin:0px;">
+									<tr>
+										<td>Height</td>
+										<td id="health-height"></td>
+									</tr>
+									<tr>
+										<td>Weight</td>
+										<td id="health-weight"></td>
+									</tr>
+									<tr>
+										<td>Blood Type</td>
+										<td id="health-blood"></td>
+									</tr>
+								</table>
+							</dd>
+						</dl>
+					</li>
+				{{else}}
+					<li class="click-row" href="{{:Url}}">
+						<dl>
+							<dd>Health</dd>
+							<dd>No health profile</dd>
+						</dl>
+					</li>
+				{{/if}}
+			{{/if}}
+			{{if SocialProfile['Facebook']||SocialProfile['Twitter']||SocialProfile['Google']||SocialProfile['Google']||SocialProfile['LinkedIn']||SocialProfile['Skype']}}
+				<li>
+					<dl>
+						<dd>Social</dd>
+						<dd>
+							{{if SocialProfile['Facebook']}}
+								<a href="http://facebook.com/{{:SocialProfile['Facebook']}}" target="_blank"><img src="images/social/facebook.png" class="contact_social_icon"/></a>
+							{{/if}}
+							{{if SocialProfile['Twitter']}}
+								<a href="http://twitter.com/{{:SocialProfile['Twitter']}}" target="_blank"><img src="images/social/twitter.png" class="contact_social_icon"/></a>
+							{{/if}}
+							{{if SocialProfile['Google']}}
+								<a href="{{:SocialProfile['Google']}}" target="_blank"><img src="images/social/google.png" class="contact_social_icon"/></a>
+							{{/if}}
+							{{if SocialProfile['LinkedIn']}}
+								<a href="http://www.linkedin.com/in/{{:SocialProfile['LinkedIn']}}" target="_blank"><img src="images/social/linkedin.png" class="contact_social_icon"/></a>
+							{{/if}}
+							{{if SocialProfile['Skype']}}
+								<a href="callto://{{:SocialProfile['Skype']}}"><img src="images/social/skype.png" class="contact_social_icon tooltip"/></a>
+							{{/if}}
+						</dd>
+					</dl>
+				</li>
+			{{/if}}
+			<li class="subheader" id="attachments-header">
+				<dl>
+					<dd class="title">Entries</dd>
+					<dd style="width:80%;">
+						<span id="attachment-count" class="pull-left">
+							<img src="images/progress-bar-arrows.gif" style="width:15px;">
+						</span>
+						<a href="#" class="pull-right" id="expand-attachments" style="font-size:20px;">
+							<i class="icon-plus-sign"></i>
+						</a>
+						<a href="#" class="pull-right" id="add-attachment-btn" style="font-size:20px; margin-right:15px;">
+							<i class="icon-edit"></i>
+						</a>
+					</dd>
+				</dl>
+			</li>
+			<li class="subheader" id="notes-header">
+				<dl>
+					<dd class="title">Notes</dd>
+					<dd style="width:80%;">
+						<span id="note-count" class="pull-left">
+							<img src="images/progress-bar-arrows.gif" style="width:15px;">
+						</span>
+						<a href="#" class="pull-right" id="expand-notes" style="font-size:20px;">
+							<i class="icon-plus-sign" id="notes-icon"></i>
+						</a>
+						<a href="#" class="pull-right" id="add-note-btn" style="font-size:20px; margin-right:15px;">
+							<i class="icon-edit"></i>
+						</a>
+					</dd>
+				</dl>
+			</li>
+		</script>
+		
+		<!-- ATTACHMENTS TABLE -->
+		<script id="contact-attachments-template" type="text/x-jquery-tmpl">
+			{{for Items}}
+				<li class="click-row attach-row hide" rel="attachment-item" data-item-id="{{:ItemId}}">
+					<dl>
+						<dd class='pad-top-bottom10'>
+							{{if AvatarUrl}}
+								<img src="{{:AvatarUrl}}">
+							{{else}}
+								<img src="images/memory-75.png" style="width: 30px">
+							{{/if}}
+						</dd>
+						<dd class='pad-top-bottom10'>
+							<span class="title">{{:Title}}</span><br>
+							<span class="description">{{:Description}}</span>
+						</dd>
+					</dl>
+				</li>
+			{{/for}}
+		</script>
+		
+		<script id="contact-attachments-empty-template" type="text/x-jquery-tmpl">
+			<li id="attachments-empty" class="hide attach-row">
+				<dl>
+					<dd class="text-left">
+						{{:Name}} has no entries
+					</dd>
+				</dl>
+			</li>
+		</script>
+		
+		<!-- NOTES TABLE -->
+		<script id="contact-notes-template" type="text/x-jquery-tmpl">
+			{{for Notes}}
+				<li class="note-row hide" style="padding:8px; max-width:95%;">
+					{{:Timestamp}}
+					<a href="javascript:editNote('{{:NoteId}}')" class="note-btn pull-right" id="edit-note-{{:NoteId}}">
+						<i class="icon-edit"></i>
+					</a>
+					<div class="wrap-normal" id="orig-note-{{:NoteId}}" style="max-width:90%; padding:8px; font-weight:bold;">
+						{{:Text}}
+					</div>
+					<div class="hide" id="new-note-{{:NoteId}}"  style="max-width:85%; padding:8px;">
+						<textarea rows="5" style="float:left; display:inline;" id="note-text-{{:NoteId}}">{{:Text}}</textarea>
+					</div>
+					<a href="javascript:saveNote('POST','{{:NoteId}}')" class="hide accept" id="save-note-{{:NoteId}}">
+						<i class="icon-ok-sign"></i>
+					</a>
+					<a href="javascript:saveNote('DELETE','{{:NoteId}}')" class="hide reject" id="delete-note-{{:NoteId}}">
+						<i class="icon-remove-sign"></i>
+					</a>
+				</li>
+			{{/for}}
+		</script>
+		
+		<script id="contact-notes-empty-template" type="text/x-jquery-tmpl">
+			<li id="notes-empty" class="hide  note-row">
+				<dl>
+					<dd class="text-left">
+						{{:Name}} has no notes
+					</dd>
+				</dl>
+			</li>
+		</script>
+		
+		<script id="new-note-template" type="text/x-jquery-tmpl">
+			<li id="new-note-row" style="padding:8px; max-width:95%;">
+				{{:Timestamp}}<br>
+				<div style="max-width:85%;  padding:8px;">
+					<textarea rows="5" style="float:left; display:inline;" placeholder="Add a note..." id="new-note-text"></textarea>
+				</div>
+				<a href="javascript:saveNote('PUT')" class="accept">
+					<i class="icon-ok-sign"></i>
+				</a>
+				<a href="javascript:$('#new-note-row').remove()" class="reject">
+					<i class="icon-remove-sign"></i>
+				</a><br>
+			</li>
+		</script>
+		
+		<style>
+		
+		</style>
+	</head>
+	<body onload="assimilate();">
+		<img src="jquery/images/ajax-loader.png" id="loading-spinner" class="hide">
+		<div class="header-bar">
+			<ul>
+				<li id="menu-btn" onclick="handleMenuButton()"><i class="icon-th-list icon-large"></i></li>
+				<li>Contact Details</li>
+				<li id="edit-contact" onclick="editContact()"><i class="icon-pencil icon-large"></i></li>
+			</ul>
+		</div>
+		
+		<ul class="item-detail-list pull-left" id="contact-detail-container">
+			
+			
+		</ul>
+		
+	</body>
+	<script>
+	
+	function onPageReady(){
+		
+		var contactInfo = $.jStorage.get("_current_contact_json");
+		// console.log(JSON.stringify(contactInfo));
+		if(!isBlank(contactInfo.AvatarId)){
+			contactInfo.AvatarUrl = avatarUrl(contactInfo.AvatarId, 400);
+		}
+		$('#contact-detail-container').html($('#contact-detail-template').render(contactInfo));
+		
+		if(!isBlank(contactInfo.HealthProfile)){
+			var profile = contactInfo.HealthProfile;
+				if(profile.Height && profile.Height.Value){
+				var total = profile.Height.Value;
+				var feet = Math.floor(total/12);
+				var inches = total % 12;
+				$("#health-height").text(feet+"' "+inches+"\"");
+			}
+			if(profile.Weight && profile.Weight.Value){
+				$("#health-weight").text(profile.Weight.Value+" lbs");
+			}
+			if(profile.BloodType){
+				var bloodTypes = {1:"O-",2:"O+",3:"A-",4:"A+",5:"B-",6:"B+",7:"AB+",8:"AB-"};
+				$("#health-blood").text(bloodTypes[profile.BloodType]);
+			}
+		}
+		
+		$(".click-row").live("click",function(e){
+			e.preventDefault();
+			var rel = $(this).attr("rel");
+			var href = $(this).attr("href");
+			if(rel == "attachment-item"){
+				loadItem($(this).attr("data-item-id"));
+			}else if(!isBlank(href)){
+				window.location.href = href;
+			}
+		});
+		
+		$("#add-note-btn").live("click", function(e){
+			e.preventDefault();
+			var html = $("#new-note-template").render({Timestamp: formatDate(new Date()).Short});
+			$("#notes-header").after(html);
+		});
+		
+		$("#add-attachment-btn").live("click", function(e){
+			e.preventDefault();
+			$.jStorage.set("_add_contact_to_item", contactInfo.ContactId);
+			goToItems();
+		});
+		
+		$("#expand-attachments").click(function(e){
+			e.preventDefault();
+			$(this).find("i").toggleClass("icon-plus-sign");
+			$(this).find("i").toggleClass("icon-minus-sign");
+			$(".attach-row").toggle();
+		});
+		
+		$("#expand-notes").click(function(e){
+			e.preventDefault();
+			expandNotes();
+		});
+		
+		getContactAttachments();
+		getContactNotes();
+	}
+	
+	function expandNotes(bool){
+		if(isBlank(bool)){
+			$("#notes-icon").toggleClass("icon-plus-sign");
+			$("#notes-icon").toggleClass("icon-minus-sign");
+			$(".note-row").toggle();
+		}else if(bool == true){
+			$("#notes-icon").removeClass("icon-plus-sign");
+			$("#notes-icon").addClass("icon-minus-sign");
+			$(".note-row").show();
+		}else{
+			$("#notes-icon").addClass("icon-plus-sign");
+			$("#notes-icon").removeClass("icon-minus-sign");
+			$(".note-row").hide();
+		}
+	}
+	
+	function editNote(id){
+		$("#edit-note-"+id).hide();
+		$("#save-note-"+id).show();
+		$("#delete-note-"+id).show();
+		$("#orig-note-"+id).hide();
+		$("#new-note-"+id).show();
+	}
+	
+	function getContactAttachments(){
+		// showLoading();
+		var contact = $.jStorage.get("_current_contact_json");
+		apiGet(apiPath("item/list")+"&contact="+contact.ContactId, {}, function(json) {
+			$("#attachment-count").html(json.Items.length);
+			if(json.Items.length > 0){
+				$.each(json.Items, function(index, item){
+					if(!isBlank(item.AvatarId)){
+						item.AvatarUrl = avatarUrl(item.AvatarId, 30);
+					}
+				});
+				$("#attachments-loading").remove();
+				$('#attachments-header').after($('#contact-attachments-template').render(json));
+				// hideLoading();
+			}else{
+				var name = contact.FirstName;
+				if(isBlank(name)){
+					name = contact.Name;
+				}
+				$("#attachments-loading").remove();
+				$('#attachments-header').after($('#contact-attachments-empty-template').render({"Name": name}));
+				// hideLoading();
+			}
+			
+		});
+	}
+	
+	function getContactNotes(){
+		// showLoading();
+		$(".note-row").remove();
+		var contact = $.jStorage.get("_current_contact_json");
+		apiGet(apiPath("contact/"+contact.ContactId+"/Note"), {}, function(json) {
+			console.log(json);
+			$("#note-count").html(json.Notes.length);
+			if(json.Notes.length > 0){
+				for(var i=0; i<json.Notes.length; i++){
+					var date = getDate(json.Notes[i].Timestamp);
+					json.Notes[i].Timestamp = formatDate(date).Short;
+					console.log(json.Notes[i].Timestamp);
+				}
+				$('#notes-header').after($('#contact-notes-template').render(json));
+				// hideLoading();
+			}else{
+				var name = contact.FirstName;
+				if(isBlank(name)){
+					name = contact.Name;
+				}
+				$("#notes-loading").remove();
+				$('#notes-header').after($('#contact-notes-empty-template').render({"Name": name}));
+				// hideLoading();
+			}
+		});
+	}
+	
+	function saveNote(method,id){
+		id = id ? id : "";
+		var contactId = $.jStorage.get("_current_contact_json").ContactId;
+		var text = id ? $("#note-text-"+id).val().trim() : $("#new-note-text").val().trim();
+		var noteId = id ? ("/"+id) : "";
+		if(!isBlank(text)){
+			showLoading();
+			var newnote = (method == "DELETE") ? {} : {
+					"Text": text,
+					"Timestamp": "/Date("+new Date().getTime()+")/",
+					"NoteId": id
+				};
+			console.log(newnote);
+			apiPost(apiPath("contact/"+contactId+"/note"+noteId), newnote, function(json) {
+				$("#new-note-row").remove();
+				expandNotes(false);
+				getContactNotes();
+				hideLoading();
+			}, method);
+		}else{
+			console.log("text was empty");
+		}
+	}
+	
+	function loadItem(itemId) {
+		showLoading();
+		apiGet(apiPath('item/'+itemId), {}, function(json){
+			$.each(json.Item.Attachments,function(i,file){
+				if(file.MediaType == 1){
+					file.Url = avatarUrl(file.MediaItemId,400);
+				}
+			});
+			$.jStorage.set("_current_item_data",json.Item);
+			console.log(json.Item, JSON.stringify(json.Item));
+			window.location.href = "item-detail.html";
+		});
+	}
+	
+	function editContact(){
+		showLoading();
+		$.jStorage.set("_update_current_contact", true);
+		window.location.href = "contacts-add.html";
+	}
+	
+		
+	</script>
+</html>

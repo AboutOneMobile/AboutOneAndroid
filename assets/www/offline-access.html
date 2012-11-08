@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Stream</title>
+		<script type="text/javascript" src="jquery/jquery-1.7.2.min.js"></script>
+		<script type="text/javascript" src="cordova.js"></script>
+		<script type="text/javascript" src="jsrender.js"></script>
+		<script type="text/javascript" src="jstorage.js"></script>
+		<script type="text/javascript" src="config.js"></script>
+		<script type="text/javascript" src="base.js"></script>
+		
+		<link rel="stylesheet" type="text/css" href="bootstrap/css/ao-bootstrap.css" />
+		<link rel="stylesheet" type="text/css" href="bootstrap/css/font-awesome.css" />
+		<link rel="stylesheet" type="text/css" href="css/global.css" />
+		
+		<meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+		
+		<style>
+			.footer-nav-list li{
+				width:50% !important;
+			}
+			#contact-table tr td{
+				vertical-align: middle;
+				height: 25px;
+			}
+			#contact-table tr td:first-child{
+				text-align:center;
+			}
+			#contact-table tr td[colspan="2"]{
+				text-align:left;
+				width: 30px;
+			}
+			.gray-back{
+				background-color: #606060;
+				color: white;
+			}
+			#health-table tr td{
+				vertical-align: middle;
+			}
+			#health-table tr td.gray-back{
+				height: 25px;
+			}
+			#health-table tr td[colspan="2"]{
+				text-align: left;
+			}
+		</style>
+		
+	</head>
+	<body onload="assimilate();">
+		<img src="jquery/images/ajax-loader.png" id="loading-spinner" class="hide">
+		<div class="ao-header-bar">
+			<a href="login.html" class="btn btn-success pull-left back-btn" id="return-btn"><i class="icon-chevron-left icon-white"></i></a>
+			<img src="images/aboutone_green.png" id="back-logo">
+			<span class="pull-right">Offline</span>
+		</div>
+		<div class="header-bar">
+			<ul>
+				<li id="back-btn"><i class="icon-circle-arrow-left icon-large"></i></li>
+				<li>Offline Access</li>
+				<li onclick="checkForConn()">
+					<i class="icon-signal icon-large"></i>
+				</li>
+			</ul>
+		</div>
+		
+		<div id="emergency-contacts">
+			<table class="table" id="contact-table">
+				<tr>
+					<td class="pressed"><img src="images/contacts-white-36.png" style="width:25px;"></td>
+					<td class="pressed"><span class="title">Emergency Contacts <span id="contact-count"></span></span></td>
+				</tr>
+			</table>
+		</div>
+		
+		<div id="health-info" class="hide">
+			<table class="table" id="health-table">
+				<tr>
+					<td colspan='3' class="pressed" style="line-height: 30px;">
+						<img src="images/health-white-75.png" style="width:25px; margin: 0 10px -5px 0;">
+						<span class="title">Family Health Information <span id="health-count"></span></span>
+					</td>
+				</tr>
+			</table>
+		</div>
+		
+		
+		
+		<!-- FOOTER NAV BAR -->
+		<div class="ao-footer-filler"></div>
+		<div class="footer-nav fix-pos footer">
+			<ul class="footer-nav-list">
+				<li class="active" id="contacts-btn">
+					<img src="images/contacts-white-36.png"><br>
+					Contacts
+				</li>
+				<li id="health-btn">
+					<img src="images/health-75.png"><br>
+					Health Info
+				</li>
+			</ul>
+		</div>
+		<!-- END FOOTER NAV BAR -->
+		
+	</body>
+	<script>
+	
+	function onPageReady(){
+		
+		checkTimeout();
+		
+		var contactsBtn = $("#contacts-btn");
+		var healthBtn = $("#health-btn");
+		
+		contactsBtn.click(function(){
+			if(!contactsBtn.hasClass("active")){
+				contactsBtn.children("img").attr("src","images/contacts-white-36.png");
+				healthBtn.children("img").attr("src","images/health-75.png");
+				contactsBtn.addClass("active");
+				healthBtn.removeClass("active");
+				$("#emergency-contacts").show();
+				$("#health-info").hide();
+				resetTimeout();
+			}
+		});
+		
+		healthBtn.click(function(){
+			if(!healthBtn.hasClass("active")){
+				contactsBtn.children("img").attr("src","images/contacts-36.png");
+				healthBtn.children("img").attr("src","images/health-white-75.png");
+				contactsBtn.removeClass("active");
+				healthBtn.addClass("active");
+				$("#emergency-contacts").hide();
+				$("#health-info").show();
+				resetTimeout();
+			}
+		});
+		
+		var emergency = aoStore.get("emergency_contacts");
+		$("#contact-count").text("(" + emergency.length + ")");
+		var table = $("#contact-table");
+		if(emergency.length > 0){
+			$.each(emergency, function(i, contact){
+				table.append("<tr><td colspan='2' class='gray-back'><strong>" + contact.Name + "</strong></td></tr>");
+				if(!isBlank(contact.Phone)){
+					table.append("<tr><td class='gray-back phone' rel='"+contact.Phone+"'><i class='icon-phone-white'></i></td><td>"+contact.Phone+"</td></tr>");
+				}
+				if(!isBlank(contact.Email)){
+					table.append("<tr><td class='gray-back email' rel='"+contact.Email+"'><i class='icon-envelope icon-white'></i></td><td>"+contact.Email+"</td></tr>");
+				}
+			});
+		}else{
+			table.append("<tr><td colspan='2'>You have not added any of your contacts to your Emergency Contact list</td></tr>" +
+				"<tr><td colspan='2' class='small-help-text'>To add an emergency contact to your list, log into the app, find the contact you wish to add, "+
+				"click 'Edit Contact' and then check the 'Emergency Contact' check box.</td></tr>");
+		}
+		
+		
+		var managed = aoStore.get("managed_contacts");
+		var table = $("#health-table");
+		$.each(managed, function(i, id){
+			var contact = aoStore.get(id);
+			table.append("<tr><td colspan='3' class='gray-back'><strong>" + contact.Name + "</strong></td></tr>");
+			var profile = contact.HealthProfile;
+			if(!isBlank(profile)){
+				if(!isBlank(profile.Height) && !isBlank(profile.Height.Value)){
+					var heightDate = profile.WeightDate;
+					if(!isBlank(heightDate)){
+						heightDate = heightDate.Month + "/" + heightDate.Day + "/" + heightDate.Year;
+					}
+					var total = profile.Height.Value;
+					var feet = Math.floor(total/12);
+					var inches = total % 12;
+					table.append("<tr><td>Height</td><td>"+feet+"' "+inches+"\"</td><td>"+heightDate+"</td></tr>");
+				}
+				if(!isBlank(profile.Weight) && !isBlank(profile.Weight.Value)){
+					var weightDate = profile.WeightDate;
+					if(!isBlank(weightDate)){
+						weightDate = weightDate.Month + "/" + weightDate.Day + "/" + weightDate.Year;
+					}
+					table.append("<tr><td>Weight</td><td>"+profile.Weight.Value+" lbs</td><td>"+weightDate+"</td></tr>");
+				}
+				if(!isBlank(profile.BloodType)){
+					var bloodTypes = {1:"O-",2:"O+",3:"A-",4:"A+",5:"B-",6:"B+",7:"AB+",8:"AB-"};
+					table.append("<tr><td>Blood Type</td><td colspan='2'>"+bloodTypes[profile.BloodType]+"</td></tr>");
+				}
+			}else{
+				table.append("<tr><td colspan='3'>"+contact.FirstName+" has no health profile</td></tr>");
+			}
+		});
+		
+		var interval;
+		interval = setInterval(function(){
+			if(checkConnection()){
+				clearInterval(interval);
+				$("#return-btn").text("Login");
+				aoAlert("An Internet connection has now been detected.  You may now use the Login button to access the online features of the app.","Connection Detected");
+			}
+		}, 20000);
+		
+		$("#return-btn").click(function(e){
+			e.preventDefault();
+			$.jStorage.deleteKey("offline_ttl");
+			$.jStorage.deleteKey("connection_found");
+			checkTimeout();
+		});
+		
+		$(".phone").click(function(e){
+			e.preventDefault();
+			window.location.href = "tel:" + $(this).attr("rel");
+		});
+		
+		$(".email").click(function(e){
+			e.preventDefault();
+			window.location.href = "mailto:" + $(this).attr("rel");
+		});
+		
+		
+	}
+	
+	function resetTimeout(){
+		$.jStorage.setTTL("offline_ttl", 3600000);
+	}
+	
+	function checkTimeout(){
+		if(isBlank($.jStorage.get("offline_ttl"))){
+			window.location.href = "login.html";
+		}
+	}
+	
+	function checkForConn(){
+		if(checkConnection()){
+			window.location.href = "login.html";
+		}else{
+			aoAlert("We are still unable to detect an Internet connection.  Please connect to the Internet and try again.","No Connecion Found");
+		}
+	}
+	
+		
+	</script>
+</html>
